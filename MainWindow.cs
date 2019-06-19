@@ -160,6 +160,10 @@ namespace GTAPanicButton
             {
                 // process has already exited or doesn't exist
             }
+            catch (IndexOutOfRangeException)
+            {
+                MessageBox.Show("A process could not be found. You can likely ignore this error.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             catch
             {
                 MessageBox.Show("Something went wrong.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
