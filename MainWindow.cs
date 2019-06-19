@@ -17,7 +17,9 @@ namespace GTAPanicButton
         public static extern bool UnregisterHotKey(IntPtr hWnd,
                                                    int id);
 
-        private const int hotkeyID = 1;
+        private const int hotkeyNum = 0x0312;
+        private const int hotkeySuspend = 1;
+        private const int hotkeyKill = 2;
 
         [Flags]
         public enum ThreadAccess : int
@@ -48,13 +50,24 @@ namespace GTAPanicButton
         {
             InitializeComponent();
 
+            try
+            {
+                Process process = Process.GetProcessesByName("GTA5")[0];
+            }
+            catch (IndexOutOfRangeException)
+            {
+                MessageBox.Show("The GTA game process could not be found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(1);
+            }
+
             // Keycodes: Alt = 1, Ctrl = 2, Shift = 4, Win = 8 (add together to change modifier)
-            RegisterHotKey(this.Handle, hotkeyID, 6, (int)Keys.F12);
+            RegisterHotKey(this.Handle, hotkeyKill, 6, (int)Keys.F11);
+            RegisterHotKey(this.Handle, hotkeySuspend, 6, (int)Keys.F12);
         }
 
         protected override void WndProc(ref Message m)
         {
-            if (m.Msg == 0x0312 && m.WParam.ToInt32() == hotkeyID)
+            if (m.Msg == hotkeyNum && m.WParam.ToInt32() == hotkeySuspend)
             {
                 if (!isSuspended)
                 {
@@ -65,19 +78,24 @@ namespace GTAPanicButton
                     isSuspended = false;
                 }
             }
+            else if (m.Msg == hotkeyNum && m.WParam.ToInt32() == hotkeyKill)
+            {
+                KillGTASocialClubProcess();
+            }
+
             base.WndProc(ref m);
         }
 
         private static void SuspendProcess()
         {
-            var process = Process.GetProcessesByName("GTA5")[0]; // there's probably only going to be one instance
+            var gtaProcess = Process.GetProcessesByName("GTA5")[0]; // there's probably only going to be one instance
 
-            if (process.ProcessName == string.Empty)
+            if (gtaProcess.ProcessName == string.Empty)
                 return;
 
-            foreach (ProcessThread pT in process.Threads)
+            foreach (ProcessThread thread in gtaProcess.Threads)
             {
-                IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)pT.Id);
+                IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)thread.Id);
 
                 if (pOpenThread == IntPtr.Zero)
                 {
@@ -85,21 +103,20 @@ namespace GTAPanicButton
                 }
 
                 SuspendThread(pOpenThread);
-
                 CloseHandle(pOpenThread);
             }
         }
 
         public static void ResumeProcess()
         {
-            var process = Process.GetProcessesByName("GTA5")[0];
+            Process gtaProcess = Process.GetProcessesByName("GTA5")[0];
 
-            if (process.ProcessName == string.Empty)
+            if (gtaProcess.ProcessName == string.Empty)
                 return;
 
-            foreach (ProcessThread pT in process.Threads)
+            foreach (ProcessThread thread in gtaProcess.Threads)
             {
-                IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)pT.Id);
+                IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)thread.Id);
 
                 if (pOpenThread == IntPtr.Zero)
                 {
@@ -116,7 +133,45 @@ namespace GTAPanicButton
             }
         }
 
+        public static void KillGTASocialClubProcess()
+        {
+            try
+            {
+                Process gtaProcess = Process.GetProcessesByName("GTA5")[0];
+                Process gtaLauncherProcess = Process.GetProcessesByName("GTAVLauncher")[0];
+                Process[] socialClubProcesses = Process.GetProcessesByName("SocialClubHelper");
+
+                gtaProcess.Kill();
+                gtaLauncherProcess.Kill();
+
+                if (socialClubProcesses.Length <= 0)
+                    return;
+
+                foreach (Process process in socialClubProcesses)
+                {
+                    process.Kill();
+                }
+            }
+            catch (NotSupportedException)
+            {
+                // this shouldnt even happen???
+            }
+            catch (InvalidOperationException)
+            {
+                // process has already exited or doesn't exist
+            }
+            catch
+            {
+                MessageBox.Show("Something went wrong.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void Label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Label2_Click(object sender, EventArgs e)
         {
 
         }
