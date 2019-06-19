@@ -152,21 +152,13 @@ namespace GTAPanicButton
                     process.Kill();
                 }
             }
-            catch (NotSupportedException)
+            catch (Exception e)
             {
-                // this shouldnt even happen???
-            }
-            catch (InvalidOperationException)
-            {
-                // process has already exited or doesn't exist
-            }
-            catch (IndexOutOfRangeException)
-            {
-                MessageBox.Show("A process could not be found. You can likely ignore this error.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch
-            {
-                MessageBox.Show("Something went wrong.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (e is IndexOutOfRangeException) {
+                     MessageBox.Show("A process could not be found. You can likely ignore this error.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } else {
+                     MessageBox.Show("Something went wrong. Exception : " + e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
