@@ -9,12 +9,12 @@ namespace GTAPanicButton
     public partial class MainWindow : Form
     {
         [DllImport("user32.dll")]
-        public static extern bool RegisterHotKey(IntPtr hWnd,
+        private static extern bool RegisterHotKey(IntPtr hWnd,
                                                  int id,
                                                  int fsModifiers,
                                                  int vlc);
         [DllImport("user32.dll")]
-        public static extern bool UnregisterHotKey(IntPtr hWnd,
+        private static extern bool UnregisterHotKey(IntPtr hWnd,
                                                    int id);
 
         private const int hotkeyNum = 0x0312;
@@ -36,31 +36,37 @@ namespace GTAPanicButton
         }
 
         [DllImport("kernel32.dll")]
-        static extern IntPtr OpenThread(ThreadAccess dwDesiredAccess, bool bInheritHandle, uint dwThreadId);
+        private static extern IntPtr OpenThread(ThreadAccess dwDesiredAccess, bool bInheritHandle, uint dwThreadId);
         [DllImport("kernel32.dll")]
-        static extern uint SuspendThread(IntPtr hThread);
+        private static extern uint SuspendThread(IntPtr hThread);
         [DllImport("kernel32.dll")]
-        static extern int ResumeThread(IntPtr hThread);
+        private static extern int ResumeThread(IntPtr hThread);
         [DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
-        static extern bool CloseHandle(IntPtr handle);
+        private static extern bool CloseHandle(IntPtr handle);
 
-        private bool isSuspended = false; // this will stop it from trying to suspend twice
+        private bool isSuspended = false;
 
         public MainWindow()
         {
             InitializeComponent();
 
+            // check if GTA process is running
             try
             {
                 Process process = Process.GetProcessesByName("GTA5")[0];
             }
             catch (IndexOutOfRangeException)
             {
-                MessageBox.Show("The GTA game process could not be found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("The GTA game process could not be found. " +
+                                "Maybe try relaunching this program as an administrator.", 
+                                "Error", 
+                                MessageBoxButtons.OK, 
+                                MessageBoxIcon.Error);
                 Environment.Exit(1);
             }
 
             // Keycodes: Alt = 1, Ctrl = 2, Shift = 4, Win = 8 (add together to change modifier)
+            // Ctrl + Shift = 6
             RegisterHotKey(this.Handle, hotkeyKill, 6, (int)Keys.F11);
             RegisterHotKey(this.Handle, hotkeySuspend, 6, (int)Keys.F12);
         }
@@ -107,7 +113,7 @@ namespace GTAPanicButton
             }
         }
 
-        public static void ResumeProcess()
+        private static void ResumeProcess()
         {
             Process gtaProcess = Process.GetProcessesByName("GTA5")[0];
 
@@ -133,7 +139,7 @@ namespace GTAPanicButton
             }
         }
 
-        public static void KillGTASocialClubProcess()
+        private static void KillGTASocialClubProcess()
         {
             try
             {
@@ -155,21 +161,30 @@ namespace GTAPanicButton
             catch (Exception e)
             {
                 if (e is IndexOutOfRangeException) {
-                     MessageBox.Show("A process could not be found. You can likely ignore this error.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                     MessageBox.Show("A process could not be found. You can " +
+                                     "probably ignore this error.", "Error", 
+                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
-                     MessageBox.Show("Something went wrong. Exception : " + e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                     MessageBox.Show("Something went wrong. " +
+                                     "Please make an issue on the Github " +
+                                     "repository and include this error " +
+                                     "message as a screenshot. Exception: " +
+                                     e.Message, "Error", MessageBoxButtons.OK,
+                                     MessageBoxIcon.Error);
                 }
             }
         }
 
-        private void Label1_Click(object sender, EventArgs e)
+        private void BtnCredits_Click(object sender, EventArgs e)
         {
-
-        }
-
-        private void Label2_Click(object sender, EventArgs e)
-        {
-
+            MessageBox.Show("Developers: BradF-99 & Assasindie\n" +
+                            "Testers: joco & charlco\n" +
+                            "Thank you to the testers, as well as " +
+                            "Magnus Johansson, Otiel and henon " +
+                            "on StackOverflow!",
+                            "Credits",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
         }
     }
 }
