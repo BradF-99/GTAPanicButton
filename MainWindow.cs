@@ -55,7 +55,7 @@ namespace GTAPanicButton
             // check if GTA process is running
             try
             {
-                //Process process = Process.GetProcessesByName("GTA5")[0];
+                Process process = Process.GetProcessesByName("GTA5")[0];
             }
             catch (IndexOutOfRangeException)
             {
@@ -101,6 +101,8 @@ namespace GTAPanicButton
             else if (m.Msg == hotkeyNum && m.WParam.ToInt32() == hotkeyKill)
             {
                 KillGTASocialClubProcess();
+                if (soundCues)
+                    SystemSounds.Beep.Play();
             }
 
             base.WndProc(ref m);
@@ -171,7 +173,6 @@ namespace GTAPanicButton
                 {
                     process.Kill();
                 }
-                SystemSounds.Beep.Play();
             }
             catch (Exception e)
             {
