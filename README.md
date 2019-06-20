@@ -42,7 +42,7 @@ Feel free. I welcome any improvements as long as they work.
 
 ## Lovely people who helped make this possible
 
-* joco - first tester!
+* [@JordanOcokoljic](www.github.com/JordanOcokoljic) - first tester!
 * charlco - discovered exceptions that needed to be handled!
 * Assasindie - contributed improvements to exception handling!
 * Starwobble and Llamasassboat - suggested the key shortcut to quit the game instantly!
