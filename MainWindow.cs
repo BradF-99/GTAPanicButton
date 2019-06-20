@@ -3,7 +3,8 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Threading;
-using System.Media;
+using System.ComponentModel;
+using System.Speech.Synthesis;
 
 namespace GTAPanicButton
 {
@@ -23,17 +24,10 @@ namespace GTAPanicButton
         private const int hotkeyKill = 2;
 
         [Flags]
-        public enum ThreadAccess : int
+        private enum ThreadAccess : int
         {
             TERMINATE = (0x0001),
-            SUSPEND_RESUME = (0x0002),
-            GET_CONTEXT = (0x0008),
-            SET_CONTEXT = (0x0010),
-            SET_INFORMATION = (0x0020),
-            QUERY_INFORMATION = (0x0040),
-            SET_THREAD_TOKEN = (0x0080),
-            IMPERSONATE = (0x0100),
-            DIRECT_IMPERSONATION = (0x0200)
+            SUSPEND_RESUME = (0x0002)
         }
 
         [DllImport("kernel32.dll")]
@@ -45,8 +39,9 @@ namespace GTAPanicButton
         [DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern bool CloseHandle(IntPtr handle);
 
-        private bool isSuspended = false;
         private bool soundCues = false;
+
+        private readonly SpeechSynthesizer speech;
 
         public MainWindow()
         {
@@ -67,53 +62,116 @@ namespace GTAPanicButton
                 Environment.Exit(1);
             }
 
+            speech = new SpeechSynthesizer();
+            speech.SetOutputToDefaultAudioDevice();
+
             // Keycodes: Alt = 1, Ctrl = 2, Shift = 4, Win = 8 (add together to change modifier)
             // Ctrl + Shift = 6
             RegisterHotKey(this.Handle, hotkeyKill, 6, (int)Keys.F11);
             RegisterHotKey(this.Handle, hotkeySuspend, 6, (int)Keys.F12);
+
+            InitialiseBackgroundWorker();
         }
 
         protected override void WndProc(ref Message m)
         {
             if (m.Msg == hotkeyNum && m.WParam.ToInt32() == hotkeySuspend)
             {
-                if (!isSuspended)
+                if (backgroundWorker.IsBusy != true)
                 {
-                    isSuspended = true;
-                    SuspendProcess();
-                    if (soundCues)
-                    {
-                        for (int i = 0; i < 9; i++)
-                        {
-                            SystemSounds.Beep.Play();
-                            Thread.Sleep(1000);
-                        }
-                        SystemSounds.Exclamation.Play();
-                    }
-                    else
-                    {
-                        Thread.Sleep(10000);
-                    }
-                    ResumeProcess();
-                    isSuspended = false;
+                    backgroundWorker.RunWorkerAsync();
                 }
             }
             else if (m.Msg == hotkeyNum && m.WParam.ToInt32() == hotkeyKill)
             {
                 KillGTASocialClubProcess();
                 if (soundCues)
-                    SystemSounds.Beep.Play();
+                    speech.SpeakAsync("GTA processes destroyed.");
             }
 
             base.WndProc(ref m);
         }
 
+        private void InitialiseBackgroundWorker()
+        {
+            backgroundWorker.DoWork +=
+                new DoWorkEventHandler(backgroundWorker_DoWork);
+            backgroundWorker.RunWorkerCompleted +=
+                new RunWorkerCompletedEventHandler(
+            backgroundWorker_RunWorkerCompleted);
+            backgroundWorker.ProgressChanged +=
+                new ProgressChangedEventHandler(
+            backgroundWorker_ProgressChanged);
+
+            backgroundWorker.WorkerReportsProgress = true;
+        }
+
+
+        private void backgroundWorker_DoWork(object sender, DoWorkEventArgs args)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            try
+            {
+                SuspendProcess();
+
+                if (soundCues)
+                    speech.SpeakAsync("GTA suspended, one moment.");
+
+                for (int i = 0; i < 10; i++)
+                {
+                    Thread.Sleep(1000);
+                    worker.ReportProgress((i + 1) * 10);
+                }
+
+                ResumeProcess();
+
+                if (soundCues)
+                    speech.SpeakAsync("GTA resumed.");
+
+                Thread.Sleep(500);
+            }
+            catch (Exception e)
+            {
+                if (e is IndexOutOfRangeException)
+                {
+                    MessageBox.Show("A process could not be found. You can " +
+                                    "probably ignore this error.", "Warning",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    MessageBox.Show("Something went wrong. " +
+                                    "Please make an issue on the Github " +
+                                    "repository and include this error " +
+                                    "message as a screenshot. Exception: " +
+                                    e.Message, "Error", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressBarTimer.Value = e.ProgressPercentage;
+        }
+        private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            progressBarTimer.Value = 0;
+            if(e.Error != null)
+            {
+                MessageBox.Show("Something went wrong. " +
+                            "Please make an issue on the Github " +
+                            "repository and include this error " +
+                            "message as a screenshot. Exception: " +
+                            e.Error.Message, "Error", MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+            }
+        }
+
         private static void SuspendProcess()
         {
             var gtaProcess = Process.GetProcessesByName("GTA5")[0]; // there's probably only going to be one instance
-
-            if (gtaProcess.ProcessName == string.Empty)
-                return;
 
             foreach (ProcessThread thread in gtaProcess.Threads)
             {
@@ -132,9 +190,6 @@ namespace GTAPanicButton
         private static void ResumeProcess()
         {
             Process gtaProcess = Process.GetProcessesByName("GTA5")[0];
-
-            if (gtaProcess.ProcessName == string.Empty)
-                return;
 
             foreach (ProcessThread thread in gtaProcess.Threads)
             {
@@ -178,8 +233,8 @@ namespace GTAPanicButton
             {
                 if (e is IndexOutOfRangeException) {
                      MessageBox.Show("A process could not be found. You can " +
-                                     "probably ignore this error.", "Error", 
-                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                     "probably ignore this error.", "Warning", 
+                                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 } else {
                      MessageBox.Show("Something went wrong. " +
                                      "Please make an issue on the Github " +
@@ -193,7 +248,7 @@ namespace GTAPanicButton
 
         private void BtnCredits_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("v1.17 - compiled on 20/06/19.\n\n" +
+            MessageBox.Show("v1.23 - compiled on 21/06/19.\n\n" +
                             "Developers: BradF-99 & Assasindie\n" +
                             "Testers: joco & charlco\n" +
                             "Thank you to the testers, as well as " +
@@ -209,7 +264,7 @@ namespace GTAPanicButton
             if (checkboxBeep.Checked)
             {
                 soundCues = true;
-                SystemSounds.Beep.Play();
+                speech.SpeakAsync("Hello!");
             }
             else
             {

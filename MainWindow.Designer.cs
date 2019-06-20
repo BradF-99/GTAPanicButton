@@ -28,12 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.labelMain = new System.Windows.Forms.Label();
             this.labelDesc1 = new System.Windows.Forms.Label();
             this.labelWarn = new System.Windows.Forms.Label();
             this.labelDesc2 = new System.Windows.Forms.Label();
             this.btnCredits = new System.Windows.Forms.Button();
             this.checkboxBeep = new System.Windows.Forms.CheckBox();
+            this.progressBarTimer = new System.Windows.Forms.ProgressBar();
+            this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // labelMain
@@ -80,7 +83,7 @@
             // 
             // btnCredits
             // 
-            this.btnCredits.Location = new System.Drawing.Point(591, 197);
+            this.btnCredits.Location = new System.Drawing.Point(591, 254);
             this.btnCredits.Name = "btnCredits";
             this.btnCredits.Size = new System.Drawing.Size(75, 35);
             this.btnCredits.TabIndex = 4;
@@ -91,19 +94,27 @@
             // checkboxBeep
             // 
             this.checkboxBeep.AutoSize = true;
-            this.checkboxBeep.Location = new System.Drawing.Point(22, 208);
+            this.checkboxBeep.Location = new System.Drawing.Point(12, 260);
             this.checkboxBeep.Name = "checkboxBeep";
-            this.checkboxBeep.Size = new System.Drawing.Size(240, 24);
+            this.checkboxBeep.Size = new System.Drawing.Size(160, 24);
             this.checkboxBeep.TabIndex = 5;
-            this.checkboxBeep.Text = "Audio Cues (Beep on Pause)";
+            this.checkboxBeep.Text = "Audio Cues (TTS)";
             this.checkboxBeep.UseVisualStyleBackColor = true;
             this.checkboxBeep.CheckedChanged += new System.EventHandler(this.CheckboxBeep_CheckedChanged);
+            // 
+            // progressBarTimer
+            // 
+            this.progressBarTimer.Location = new System.Drawing.Point(12, 208);
+            this.progressBarTimer.Name = "progressBarTimer";
+            this.progressBarTimer.Size = new System.Drawing.Size(654, 37);
+            this.progressBarTimer.TabIndex = 6;
             // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(678, 244);
+            this.ClientSize = new System.Drawing.Size(678, 299);
+            this.Controls.Add(this.progressBarTimer);
             this.Controls.Add(this.checkboxBeep);
             this.Controls.Add(this.btnCredits);
             this.Controls.Add(this.labelDesc2);
@@ -111,6 +122,7 @@
             this.Controls.Add(this.labelDesc1);
             this.Controls.Add(this.labelMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "MainWindow";
             this.Text = "GTA Panic Button";
@@ -127,6 +139,8 @@
         private System.Windows.Forms.Label labelDesc2;
         private System.Windows.Forms.Button btnCredits;
         private System.Windows.Forms.CheckBox checkboxBeep;
+        private System.Windows.Forms.ProgressBar progressBarTimer;
+        private System.ComponentModel.BackgroundWorker backgroundWorker;
     }
 }
 

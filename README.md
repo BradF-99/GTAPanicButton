@@ -1,6 +1,6 @@
 # GTAPanicButton
 
-![A screenshot of the program.](https://repository-images.githubusercontent.com/192721589/b4931080-93a3-11e9-8d80-51d0cd7c17bd)
+![A screenshot of the program.](https://repository-images.githubusercontent.com/192721589/91785900-93c3-11e9-96a0-486f26d07329)
 
 [**Watch a video of the program in action here!**](https://youtu.be/Q3I0QNe0F00)
 
@@ -12,7 +12,7 @@ The key shortcuts work in game (tested in windowed and fullscreen mode with Wind
 
 This isn't a cheat / hack / menu etc. as it never injects itself in to the game nor does it modify the game in any way. It simply tells the computer to suspend the threads and then resume them. This program **does not** affect any other players as it only drops you from the session. 
 
-I made this in 10 minutes and don't have much intention of changing it.
+I made this in 15 minutes and don't have much intention of changing it.
 
 ## Troubleshooting
 
@@ -45,7 +45,7 @@ Feel free. I welcome any improvements as long as they work.
 * [@JordanOcokoljic](https://github.com/JordanOcokoljic) - first tester!
 * [@charlco](https://github.com/charlco) - discovered exceptions that needed to be handled!
 * [@Assasindie](https://github.com/Assasindie) - contributed improvements to exception handling!
-* Starwobble and Llamasassboat - suggested the key shortcut to quit the game instantly!
+* Starwobble and Llamasassboat - suggested the key shortcut to instantly quit the game!
 * Magnus Johansson Otiel and henon on StackOverflow - contributed a great amount of the codebase!
 
 ## Resources I used  
