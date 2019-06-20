@@ -1,6 +1,6 @@
 # GTAPanicButton
 
-![A screenshot of the program.](https://repository-images.githubusercontent.com/192721589/40eff580-9308-11e9-8b3b-70f2bfd5bc7f)
+![A screenshot of the program.](https://repository-images.githubusercontent.com/192721589/b4931080-93a3-11e9-8d80-51d0cd7c17bd)
 
 [**Watch a video of the program in action here!**](https://youtu.be/Q3I0QNe0F00)
 
@@ -42,9 +42,9 @@ Feel free. I welcome any improvements as long as they work.
 
 ## Lovely people who helped make this possible
 
-* [@JordanOcokoljic](www.github.com/JordanOcokoljic) - first tester!
-* charlco - discovered exceptions that needed to be handled!
-* Assasindie - contributed improvements to exception handling!
+* [@JordanOcokoljic](https://github.com/JordanOcokoljic) - first tester!
+* [@charlco](https://github.com/charlco) - discovered exceptions that needed to be handled!
+* [@Assasindie](https://github.com/Assasindie) - contributed improvements to exception handling!
 * Starwobble and Llamasassboat - suggested the key shortcut to quit the game instantly!
 * Magnus Johansson Otiel and henon on StackOverflow - contributed a great amount of the codebase!
 
