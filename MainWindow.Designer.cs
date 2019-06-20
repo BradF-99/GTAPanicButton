@@ -33,6 +33,7 @@
             this.labelWarn = new System.Windows.Forms.Label();
             this.labelDesc2 = new System.Windows.Forms.Label();
             this.btnCredits = new System.Windows.Forms.Button();
+            this.checkboxBeep = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // labelMain
@@ -79,19 +80,31 @@
             // 
             // btnCredits
             // 
-            this.btnCredits.Location = new System.Drawing.Point(303, 202);
+            this.btnCredits.Location = new System.Drawing.Point(591, 197);
             this.btnCredits.Name = "btnCredits";
             this.btnCredits.Size = new System.Drawing.Size(75, 35);
             this.btnCredits.TabIndex = 4;
-            this.btnCredits.Text = "Credits";
+            this.btnCredits.Text = "About";
             this.btnCredits.UseVisualStyleBackColor = true;
             this.btnCredits.Click += new System.EventHandler(this.BtnCredits_Click);
+            // 
+            // checkboxBeep
+            // 
+            this.checkboxBeep.AutoSize = true;
+            this.checkboxBeep.Location = new System.Drawing.Point(22, 208);
+            this.checkboxBeep.Name = "checkboxBeep";
+            this.checkboxBeep.Size = new System.Drawing.Size(240, 24);
+            this.checkboxBeep.TabIndex = 5;
+            this.checkboxBeep.Text = "Audio Cues (Beep on Pause)";
+            this.checkboxBeep.UseVisualStyleBackColor = true;
+            this.checkboxBeep.CheckedChanged += new System.EventHandler(this.CheckboxBeep_CheckedChanged);
             // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(678, 244);
+            this.Controls.Add(this.checkboxBeep);
             this.Controls.Add(this.btnCredits);
             this.Controls.Add(this.labelDesc2);
             this.Controls.Add(this.labelWarn);
@@ -102,6 +115,7 @@
             this.Name = "MainWindow";
             this.Text = "GTA Panic Button";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -112,6 +126,7 @@
         private System.Windows.Forms.Label labelWarn;
         private System.Windows.Forms.Label labelDesc2;
         private System.Windows.Forms.Button btnCredits;
+        private System.Windows.Forms.CheckBox checkboxBeep;
     }
 }
 

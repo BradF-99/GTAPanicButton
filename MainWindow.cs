@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Threading;
+using System.Media;
 
 namespace GTAPanicButton
 {
@@ -45,6 +46,7 @@ namespace GTAPanicButton
         private static extern bool CloseHandle(IntPtr handle);
 
         private bool isSuspended = false;
+        private bool soundCues = false;
 
         public MainWindow()
         {
@@ -53,7 +55,7 @@ namespace GTAPanicButton
             // check if GTA process is running
             try
             {
-                Process process = Process.GetProcessesByName("GTA5")[0];
+                //Process process = Process.GetProcessesByName("GTA5")[0];
             }
             catch (IndexOutOfRangeException)
             {
@@ -79,7 +81,19 @@ namespace GTAPanicButton
                 {
                     isSuspended = true;
                     SuspendProcess();
-                    Thread.Sleep(10000);
+                    if (soundCues)
+                    {
+                        for (int i = 0; i < 9; i++)
+                        {
+                            SystemSounds.Beep.Play();
+                            Thread.Sleep(1000);
+                        }
+                        SystemSounds.Exclamation.Play();
+                    }
+                    else
+                    {
+                        Thread.Sleep(10000);
+                    }
                     ResumeProcess();
                     isSuspended = false;
                 }
@@ -157,6 +171,7 @@ namespace GTAPanicButton
                 {
                     process.Kill();
                 }
+                SystemSounds.Beep.Play();
             }
             catch (Exception e)
             {
@@ -177,7 +192,8 @@ namespace GTAPanicButton
 
         private void BtnCredits_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Developers: BradF-99 & Assasindie\n" +
+            MessageBox.Show("Build 14 - compiled on 20/06/19.\n\n" +
+                            "Developers: BradF-99 & Assasindie\n" +
                             "Testers: joco & charlco\n" +
                             "Thank you to the testers, as well as " +
                             "Magnus Johansson, Otiel and henon " +
@@ -185,6 +201,19 @@ namespace GTAPanicButton
                             "Credits",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
+        }
+
+        private void CheckboxBeep_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkboxBeep.Checked)
+            {
+                soundCues = true;
+                SystemSounds.Beep.Play();
+            }
+            else
+            {
+                soundCues = false;
+            }
         }
     }
 }
