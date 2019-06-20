@@ -2,15 +2,17 @@
 
 ![A screenshot of the program.](https://repository-images.githubusercontent.com/192721589/40eff580-9308-11e9-8b3b-70f2bfd5bc7f)
 
+[**Watch a video of the program in action here!**](https://youtu.be/Q3I0QNe0F00)
+
 This program allows you to put yourself in your own GTA:O online lobby by suspending the game process for 10 seconds. This is particularly useful if some *skid hacker* is setting *everyone on fire with their mods* or if you just want some peace and quiet. Your friends will be able to join the session, but other people may join at random due to the match-making algorithm - and of course we can't fix this.
 
 You can also close the game and all of its processes immediately, in case you take a **massive L** and don't want to save your progress, for example - if you are trying to complete a heist without dying or something.
 
 The key shortcuts work in game (tested in windowed and fullscreen mode with Windows 10).
 
-This isn't a cheat / hack / menu etc. as it never injects itself in to the game nor does it modify the game in any way. It simply tells the computer to suspend the threads and then resume them.
+This isn't a cheat / hack / menu etc. as it never injects itself in to the game nor does it modify the game in any way. It simply tells the computer to suspend the threads and then resume them. This program **does not** affect any other players as it only drops you from the session. 
 
-I made this in 10* minutes and don't have much intention of changing it.
+I made this in 10 minutes and don't have much intention of changing it.
 
 ## Troubleshooting
 
@@ -40,6 +42,7 @@ Feel free. I welcome any improvements as long as they work.
 * joco - first tester!
 * charlco - discovered exceptions that needed to be handled!
 * Assasindie - contributed improvements to exception handling!
+* Starwobble and Llamasassboat - suggested the key shortcut to quit the game instantly!
 * Magnus Johansson Otiel and henon on StackOverflow - contributed a great amount of the codebase!
 
 ## Resources I used  
