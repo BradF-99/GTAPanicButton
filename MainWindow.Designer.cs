@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.labelMain = new System.Windows.Forms.Label();
             this.labelDesc1 = new System.Windows.Forms.Label();
@@ -37,6 +38,7 @@
             this.checkboxBeep = new System.Windows.Forms.CheckBox();
             this.progressBarTimer = new System.Windows.Forms.ProgressBar();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.SuspendLayout();
             // 
             // labelMain
@@ -53,7 +55,7 @@
             // 
             this.labelDesc1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelDesc1.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.labelDesc1.Location = new System.Drawing.Point(0, 93);
+            this.labelDesc1.Location = new System.Drawing.Point(0, 123);
             this.labelDesc1.Name = "labelDesc1";
             this.labelDesc1.Size = new System.Drawing.Size(677, 26);
             this.labelDesc1.TabIndex = 1;
@@ -62,21 +64,22 @@
             // 
             // labelWarn
             // 
-            this.labelWarn.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelWarn.Location = new System.Drawing.Point(1, 160);
+            this.labelWarn.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelWarn.ForeColor = System.Drawing.SystemColors.ButtonShadow;
+            this.labelWarn.Location = new System.Drawing.Point(0, 80);
             this.labelWarn.Name = "labelWarn";
             this.labelWarn.Size = new System.Drawing.Size(676, 32);
             this.labelWarn.TabIndex = 2;
-            this.labelWarn.Text = "DO NOT CLOSE THIS WINDOW! Just minimise it.";
+            this.labelWarn.Text = "Don\'t close this window or the panic button won\'t work.";
             this.labelWarn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // labelDesc2
             // 
             this.labelDesc2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelDesc2.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.labelDesc2.Location = new System.Drawing.Point(12, 119);
+            this.labelDesc2.Location = new System.Drawing.Point(0, 151);
             this.labelDesc2.Name = "labelDesc2";
-            this.labelDesc2.Size = new System.Drawing.Size(654, 26);
+            this.labelDesc2.Size = new System.Drawing.Size(677, 26);
             this.labelDesc2.TabIndex = 3;
             this.labelDesc2.Text = "Press Ctrl + Shift + F12 to suspend GTA for 10 seconds.";
             this.labelDesc2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -104,10 +107,21 @@
             // 
             // progressBarTimer
             // 
-            this.progressBarTimer.Location = new System.Drawing.Point(12, 208);
+            this.progressBarTimer.Location = new System.Drawing.Point(12, 198);
             this.progressBarTimer.Name = "progressBarTimer";
-            this.progressBarTimer.Size = new System.Drawing.Size(654, 37);
+            this.progressBarTimer.Size = new System.Drawing.Size(654, 50);
             this.progressBarTimer.TabIndex = 6;
+            // 
+            // notifyIcon
+            // 
+            this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.notifyIcon.BalloonTipText = "The GTA Panic Button has minimised to your task bar. Click on the icon in the tas" +
+    "k bar to maximise it again. To close, click this icon and close the program.";
+            this.notifyIcon.BalloonTipTitle = "GTA Panic Button";
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+            this.notifyIcon.Text = "notifyIcon";
+            this.notifyIcon.Visible = true;
+            this.notifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseClick);
             // 
             // MainWindow
             // 
@@ -126,6 +140,7 @@
             this.MaximizeBox = false;
             this.Name = "MainWindow";
             this.Text = "GTA Panic Button";
+            this.Resize += new System.EventHandler(this.MainWindow_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -141,6 +156,7 @@
         private System.Windows.Forms.CheckBox checkboxBeep;
         private System.Windows.Forms.ProgressBar progressBarTimer;
         private System.ComponentModel.BackgroundWorker backgroundWorker;
+        private System.Windows.Forms.NotifyIcon notifyIcon;
     }
 }
 

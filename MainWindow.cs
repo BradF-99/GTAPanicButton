@@ -19,7 +19,7 @@ namespace GTAPanicButton
         private static extern bool UnregisterHotKey(IntPtr hWnd,
                                                    int id);
 
-        private const int hotkeyNum = 0x0312;
+        private const int hotkeyNum = 0x0312; // WM_HOTKEY
         private const int hotkeySuspend = 1;
         private const int hotkeyKill = 2;
 
@@ -40,12 +40,16 @@ namespace GTAPanicButton
         private static extern bool CloseHandle(IntPtr handle);
 
         private bool soundCues = false;
+        private bool balloonStatus = true; // set to false when balloon is shown
 
         private readonly SpeechSynthesizer speech;
+
+        private readonly OperatingSystem osInfo = System.Environment.OSVersion;
 
         public MainWindow()
         {
             InitializeComponent();
+            notifyIcon.Visible = false;
 
             // check if GTA process is running
             try
@@ -248,7 +252,7 @@ namespace GTAPanicButton
 
         private void BtnCredits_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("v1.23 - compiled on 21/06/19.\n\n" +
+            MessageBox.Show("v1.25 - compiled on 25/06/19.\n\n" +
                             "Developers: BradF-99 & Assasindie\n" +
                             "Testers: joco & charlco\n" +
                             "Thank you to the testers, as well as " +
@@ -270,6 +274,39 @@ namespace GTAPanicButton
             {
                 soundCues = false;
             }
+        }
+
+        private void MainWindow_Resize(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                notifyIcon.Visible = true;
+                if (balloonStatus)
+                {
+                    if (osInfo.Version.Major == 6 && osInfo.Version.Minor == 2 && osInfo.Version.Build == 9200) // thanks windows 10
+                    {
+                        MessageBox.Show("The GTA Panic Button will minimise to your task bar.\n" +
+                            "Click on the icon in the task bar to maximise it again.\n" +
+                            "To close, click this icon and close the program.\n\n" +
+                            "Usually this message would show as a balloon pop-up but " +
+                            "Windows 10 doesn't do those anymore.", "Warning",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    else
+                    {
+                        notifyIcon.ShowBalloonTip(3000);
+                    }
+                }
+                this.Hide();
+                balloonStatus = false;
+            }
+        }
+
+        private void notifyIcon_MouseClick(object sender, MouseEventArgs e)
+        {
+            Show();
+            this.WindowState = FormWindowState.Normal;
+            notifyIcon.Visible = false;
         }
     }
 }
