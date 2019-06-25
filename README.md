@@ -12,7 +12,10 @@ The key shortcuts work in game (tested in windowed and fullscreen mode with Wind
 
 This isn't a cheat / hack / menu etc. as it never injects itself in to the game nor does it modify the game in any way. It simply tells the computer to suspend the threads and then resume them. This program **does not** affect any other players as it only drops you from the session. 
 
-I made this in 15 minutes and don't have much intention of changing it.
+## Things you need
+
+* **[.NET Framework 4.0](https://dotnet.microsoft.com/download/dotnet-framework/net472)** (preferably the latest version of the framework)
+* Visual Studio 2019 (if you want to contribute - I use VS2019 Enterprise but other editions should work fine)
 
 ## Troubleshooting
 
@@ -24,21 +27,12 @@ However if it's frozen for more than 10 seconds try going to Resource Monitor an
 Try launching the program in administrator mode. I don't know. It's never happened to me before.
 
 * *The program won't open!*  
-Make sure you have downloaded the .NET Framework 4.7.2 [which you can download from here.](https://dotnet.microsoft.com/download/dotnet-framework/net472)
+Make sure you have downloaded the latest version of the .NET Framework [which you can download from here.](https://dotnet.microsoft.com/download/dotnet-framework/net472)
 
 * *My anti-virus suite says this program is a virus / malware / trojan etc!*  
-Any builds from this Github releases are confirmed virus-free. You can see this with the VirusTotal scans I add to every release. Your anti-virus suite may be detecting the slightly dodgy way the keyboard shortcuts or thread sleeping is handled. No need to worry. Just whitelist it and move on. If you are still worried, the code is right here - see for yourself.
+Any builds from this Github releases are confirmed virus-free. You can see this with the VirusTotal scans I add to every release. Your anti-virus suite is probably flagging it as it doesn't have a code signature. No need to worry. Just whitelist it and move on. If you are still worried, the code is right here - see for yourself.
 
 If your problem isn't on this list, or if the solution listed doesn't work, please open a GitHub issue.
-
-## Things you need
-
-* **[.NET Framework 4.7.2](https://dotnet.microsoft.com/download/dotnet-framework/net472)** (I don't know if you can use other versions but this is the one it's targeted for)
-* Visual Studio 2019 (if you want to contribute - I use VS2019 Enterprise but other editions should work fine)
-
-## Contributing
-
-Feel free. I welcome any improvements as long as they work.
 
 ## Lovely people who helped make this possible
 
@@ -55,9 +49,21 @@ Feel free. I welcome any improvements as long as they work.
 * https://stackoverflow.com/a/71457
 * https://stackoverflow.com/a/15413314
 
+## Contributing
+
+Please see the [Contributions](CONTRIBUTING.md) guidelines for more details.
+
+## Features that I might implement or might not
+
+* *Controller Support* - press the panic button with your Xbox, PlayStation or Mattel Power Glove controller!
+* *A nicer interface* - I don't know how to improve on perfection but I can certainly try!
+* *Apple HomeKit / |Amazon Alexa / Google Home Integration* (not really)
+
 ## Legal stuff
 
 This program and its developers are not associated with Rockstar Games or Take-Two Interactive. 
+Rockstar Games, Rockstar North, Grand Theft Auto, the GTA Five, and the Rockstar Games R* marks and logos are trademarks and/or registered trademarks of Take-Two Interactive Software, Inc. in the U.S.A. and/or foreign countries.
+The Power Glove is a registered trademark of Mattel, Inc. 
 
 The next bit is in caps so it's probably important.
 
