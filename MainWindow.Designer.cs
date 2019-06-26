@@ -39,6 +39,7 @@
             this.progressBarTimer = new System.Windows.Forms.ProgressBar();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.checkBoxStartup = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // labelMain
@@ -119,15 +120,27 @@
     "k bar to maximise it again. To close, click this icon and close the program.";
             this.notifyIcon.BalloonTipTitle = "GTA Panic Button";
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
-            this.notifyIcon.Text = "notifyIcon";
+            this.notifyIcon.Text = "GTA Panic Button";
             this.notifyIcon.Visible = true;
             this.notifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseClick);
+            // 
+            // checkBoxStartup
+            // 
+            this.checkBoxStartup.AutoSize = true;
+            this.checkBoxStartup.Location = new System.Drawing.Point(178, 260);
+            this.checkBoxStartup.Name = "checkBoxStartup";
+            this.checkBoxStartup.Size = new System.Drawing.Size(170, 24);
+            this.checkBoxStartup.TabIndex = 7;
+            this.checkBoxStartup.Text = "Start with Windows";
+            this.checkBoxStartup.UseVisualStyleBackColor = true;
+            this.checkBoxStartup.CheckedChanged += new System.EventHandler(this.CheckBoxStartup_CheckedChanged);
             // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(678, 299);
+            this.Controls.Add(this.checkBoxStartup);
             this.Controls.Add(this.progressBarTimer);
             this.Controls.Add(this.checkboxBeep);
             this.Controls.Add(this.btnCredits);
@@ -140,6 +153,7 @@
             this.MaximizeBox = false;
             this.Name = "MainWindow";
             this.Text = "GTA Panic Button";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainWindow_FormClosed);
             this.Resize += new System.EventHandler(this.MainWindow_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -157,6 +171,7 @@
         private System.Windows.Forms.ProgressBar progressBarTimer;
         private System.ComponentModel.BackgroundWorker backgroundWorker;
         private System.Windows.Forms.NotifyIcon notifyIcon;
+        private System.Windows.Forms.CheckBox checkBoxStartup;
     }
 }
 

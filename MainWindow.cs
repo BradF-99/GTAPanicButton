@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.Threading;
 using System.ComponentModel;
 using System.Speech.Synthesis;
+using Microsoft.Win32;
+using System.Linq;
 
 namespace GTAPanicButton
 {
@@ -40,31 +42,44 @@ namespace GTAPanicButton
         private static extern bool CloseHandle(IntPtr handle);
 
         private bool soundCues = false;
-        private bool balloonStatus = true; // set to false when balloon is shown
+        private bool balloonStatus = false; // set to false when balloon is shown (initialised true during window creation for hide arg)
+        private bool processCheckFlag = true; // set to false if nocheck arg is passed
 
         private readonly SpeechSynthesizer speech;
 
         private readonly OperatingSystem osInfo = System.Environment.OSVersion;
 
-        public MainWindow()
+        private RegistryKey startupRegKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+
+
+        public MainWindow(string[] args)
         {
             InitializeComponent();
             notifyIcon.Visible = false;
 
             // check if GTA process is running
-            try
+            if(args.Length > 0) // high iq arg handler
             {
-                Process process = Process.GetProcessesByName("GTA5")[0];
+                foreach(string arg in args)
+                {
+                    switch (arg)
+                    {
+                        case "/nocheck": // don't perform check for process 
+                            processCheckFlag = false;
+                            break;
+                        case "/hide": // start in systray
+                            notifyIcon.Visible = true;
+                            this.WindowState = FormWindowState.Minimized;
+                            this.Hide();
+                            this.Visible = false; // for some reason Hide() doesn't always work
+                            this.ShowInTaskbar = false;
+                            break;
+                    }
+                }
             }
-            catch (IndexOutOfRangeException)
-            {
-                MessageBox.Show("The GTA game process could not be found. " +
-                                "Maybe try relaunching this program as an administrator.", 
-                                "Error", 
-                                MessageBoxButtons.OK, 
-                                MessageBoxIcon.Error);
-                Environment.Exit(1);
-            }
+
+            if (processCheckFlag)
+                CheckProcess();
 
             speech = new SpeechSynthesizer();
             speech.SetOutputToDefaultAudioDevice();
@@ -75,6 +90,13 @@ namespace GTAPanicButton
             RegisterHotKey(this.Handle, hotkeySuspend, 6, (int)Keys.F12);
 
             InitialiseBackgroundWorker();
+
+            if (startupRegKey.GetValueNames().Contains("GTA Panic Button"))
+                checkBoxStartup.Checked = true;
+            else
+                checkBoxStartup.Checked = false;
+
+            balloonStatus = true;
         }
 
         protected override void WndProc(ref Message m)
@@ -109,7 +131,6 @@ namespace GTAPanicButton
 
             backgroundWorker.WorkerReportsProgress = true;
         }
-
 
         private void backgroundWorker_DoWork(object sender, DoWorkEventArgs args)
         {
@@ -219,12 +240,12 @@ namespace GTAPanicButton
             try
             {
                 Process gtaProcess = Process.GetProcessesByName("GTA5")[0];
-                Process gtaLauncherProcess = Process.GetProcessesByName("GTAVLauncher")[0];
-                Process[] socialClubProcesses = Process.GetProcessesByName("SocialClubHelper");
-
                 gtaProcess.Kill();
+
+                Process gtaLauncherProcess = Process.GetProcessesByName("GTAVLauncher")[0];
                 gtaLauncherProcess.Kill();
 
+                Process[] socialClubProcesses = Process.GetProcessesByName("SocialClubHelper");
                 if (socialClubProcesses.Length <= 0)
                     return;
 
@@ -250,9 +271,26 @@ namespace GTAPanicButton
             }
         }
 
+        private static void CheckProcess()
+        {
+            try
+            {
+                Process process = Process.GetProcessesByName("GTA5")[0];
+            }
+            catch (IndexOutOfRangeException)
+            {
+                MessageBox.Show("The GTA game process could not be found. " +
+                                "Maybe try relaunching this program as an administrator.",
+                                "Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                Environment.Exit(1);
+            }
+        }
+
         private void BtnCredits_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("v1.25 - compiled on 25/06/19.\n\n" +
+            MessageBox.Show("v1.27 (Build 27) - compiled on 2019/06/26.\n\n" +
                             "Developers: BradF-99 & Assasindie\n" +
                             "Testers: joco & charlco\n" +
                             "Thank you to the testers, as well as " +
@@ -283,21 +321,26 @@ namespace GTAPanicButton
                 notifyIcon.Visible = true;
                 if (balloonStatus)
                 {
-                    if (osInfo.Version.Major == 6 && osInfo.Version.Minor == 2 && osInfo.Version.Build == 9200) // thanks windows 10
+                    // thanks microsoft / windows 10
+                    // i refuse to import UWP and the Windows 10 SDK just for a single notification
+
+                    if (osInfo.Version.Major == 6 && osInfo.Version.Minor == 2 && osInfo.Version.Build == 9200) 
                     {
                         MessageBox.Show("The GTA Panic Button will minimise to your task bar.\n" +
                             "Click on the icon in the task bar to maximise it again.\n" +
                             "To close, click this icon and close the program.\n\n" +
                             "Usually this message would show as a balloon pop-up but " +
-                            "Windows 10 doesn't do those anymore.", "Warning",
+                            "Windows 10 doesn't do those anymore.", "Quick Message for Windows 10 users",
                             MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                     else
                     {
-                        notifyIcon.ShowBalloonTip(3000);
+                        notifyIcon.ShowBalloonTip(7000); // 7 seconds
                     }
                 }
                 this.Hide();
+                this.ShowInTaskbar = false;
+                this.Visible = false;
                 balloonStatus = false;
             }
         }
@@ -307,6 +350,51 @@ namespace GTAPanicButton
             Show();
             this.WindowState = FormWindowState.Normal;
             notifyIcon.Visible = false;
+            this.ShowInTaskbar = true;
+            this.Visible = true;
+        }
+
+        private void MainWindow_FormClosed(object sender, FormClosedEventArgs e) // clean up after ourselves
+        {
+            UnregisterHotKey(this.Handle, hotkeyKill);
+            UnregisterHotKey(this.Handle, hotkeySuspend);
+        }
+
+        private void CheckBoxStartup_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (checkBoxStartup.Checked)
+                    startupRegKey.SetValue("GTA Panic Button", "\"" + Application.ExecutablePath + "\" /nocheck /hide");
+                else
+                    startupRegKey.DeleteValue("GTA Panic Button", true);
+            }
+            catch (Exception ex)
+            {
+                if(ex is ArgumentException)
+                {
+                    MessageBox.Show("The registry key was not found. Maybe it was deleted already.",
+                                "Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                    return;
+                }
+                else
+                {
+                    string msgModifier;
+                    if (checkBoxStartup.Checked)
+                        msgModifier = "creating";
+                    else
+                        msgModifier = "deleting";
+                        
+                    MessageBox.Show("We had a problem "+ msgModifier +" the registry key." +
+                                "Maybe try restarting the program as administrator.",
+                                "Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                    return;
+                }
+            }
         }
     }
 }
