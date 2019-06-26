@@ -1,6 +1,6 @@
 # GTAPanicButton
 
-![A screenshot of the program.](https://repository-images.githubusercontent.com/192721589/91785900-93c3-11e9-96a0-486f26d07329)
+![A screenshot of the program.](https://repository-images.githubusercontent.com/192721589/ef84c080-9849-11e9-9221-50aa78b2ad77)
 
 [**Watch a video of the program in action here!**](https://youtu.be/Q3I0QNe0F00)
 
@@ -14,8 +14,8 @@ This isn't a cheat / hack / menu etc. as it never injects itself in to the game 
 
 ## Things you need
 
-* **[.NET Framework 4.0](https://dotnet.microsoft.com/download/dotnet-framework/net472)** (preferably the latest version of the framework)
-* Visual Studio 2019 (if you want to contribute - I use VS2019 Enterprise but other editions should work fine)
+* **[.NET Framework 4.0](https://dotnet.microsoft.com/download/dotnet-framework/net40)** (preferably the latest version of the framework)
+* A copy of the game might help also.
 
 ## Troubleshooting
 
@@ -24,10 +24,10 @@ That's the point. Just wait.
 However if it's frozen for more than 10 seconds try going to Resource Monitor and resuming the task. This shouldn't happen, so if it does please open an issue.
 
 * *The software says it can't find the GTA process even though it's open!*  
-Try launching the program in administrator mode. I don't know. It's never happened to me before.
+Try launching the program in administrator mode. I don't know. It's never happened to me before. Open an issue if this happens.
 
 * *The program won't open!*  
-Make sure you have downloaded the latest version of the .NET Framework [which you can download from here.](https://dotnet.microsoft.com/download/dotnet-framework/net472)
+Make sure you have downloaded the latest version of the .NET Framework [which you can download from here.](https://dotnet.microsoft.com/download/dotnet-framework/net40)
 
 * *My anti-virus suite says this program is a virus / malware / trojan etc!*  
 Any builds from this Github releases are confirmed virus-free. You can see this with the VirusTotal scans I add to every release. Your anti-virus suite is probably flagging it as it doesn't have a code signature. No need to worry. Just whitelist it and move on. If you are still worried, the code is right here - see for yourself.
@@ -36,11 +36,23 @@ If your problem isn't on this list, or if the solution listed doesn't work, plea
 
 ## Lovely people who helped make this possible
 
-* [@JordanOcokoljic](https://github.com/JordanOcokoljic) - first tester!
+Thank you to the following people!
+
+* [@JordanOcokoljic](https://github.com/JordanOcokoljic) - first tester, assisted with cleaning up my 5 minute hack job!
 * [@charlco](https://github.com/charlco) - discovered exceptions that needed to be handled!
 * [@Assasindie](https://github.com/Assasindie) - contributed improvements to exception handling!
 * Starwobble and Llamasassboat - suggested the key shortcut to instantly quit the game!
 * Magnus Johansson Otiel and henon on StackOverflow - contributed a great amount of the codebase!
+
+## Features that I might implement or might not
+
+* *Controller Support* - press the panic button with your Xbox, PlayStation or Mattel Power Glove controller!
+* *A nicer interface* - I don't know how to improve on perfection but I can certainly try!
+* *Apple HomeKit / Amazon Alexa / Google Home Integration* (not really)
+
+## Contributing
+
+Please see the [Contributions](CONTRIBUTING.md) guidelines for more details.
 
 ## Resources I used  
 
@@ -49,21 +61,11 @@ If your problem isn't on this list, or if the solution listed doesn't work, plea
 * https://stackoverflow.com/a/71457
 * https://stackoverflow.com/a/15413314
 
-## Contributing
-
-Please see the [Contributions](CONTRIBUTING.md) guidelines for more details.
-
-## Features that I might implement or might not
-
-* *Controller Support* - press the panic button with your Xbox, PlayStation or Mattel Power Glove controller!
-* *A nicer interface* - I don't know how to improve on perfection but I can certainly try!
-* *Apple HomeKit / |Amazon Alexa / Google Home Integration* (not really)
-
 ## Legal stuff
 
-This program and its developers are not associated with Rockstar Games or Take-Two Interactive. 
-Rockstar Games, Rockstar North, Grand Theft Auto, the GTA Five, and the Rockstar Games R* marks and logos are trademarks and/or registered trademarks of Take-Two Interactive Software, Inc. in the U.S.A. and/or foreign countries.
-The Power Glove is a registered trademark of Mattel, Inc. 
+*This program and its developers are not associated with Rockstar Games or Take-Two Interactive.  
+Rockstar Games, Rockstar North, Grand Theft Auto, the GTA Five, and the Rockstar Games R* marks and logos are trademarks and/or registered trademarks of Take-Two Interactive Software, Inc. in the U.S.A. and/or foreign countries.  
+The Power Glove is a registered trademark of Mattel, Inc.*
 
 The next bit is in caps so it's probably important.
 
