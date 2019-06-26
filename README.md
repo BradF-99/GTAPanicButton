@@ -1,6 +1,6 @@
 # GTAPanicButton
 
-![A screenshot of the program.](https://repository-images.githubusercontent.com/192721589/ef84c080-9849-11e9-9221-50aa78b2ad77)
+![A screenshot of the program.](https://repository-images.githubusercontent.com/192721589/1cd26e00-984c-11e9-8191-5364e34804e1)
 
 [**Watch a video of the program in action here!**](https://youtu.be/Q3I0QNe0F00)
 
@@ -63,9 +63,9 @@ Please see the [Contributions](CONTRIBUTING.md) guidelines for more details.
 
 ## Legal stuff
 
-*This program and its developers are not associated with Rockstar Games or Take-Two Interactive.  
+This program and its developers are not associated with Rockstar Games or Take-Two Interactive.  
 Rockstar Games, Rockstar North, Grand Theft Auto, the GTA Five, and the Rockstar Games R* marks and logos are trademarks and/or registered trademarks of Take-Two Interactive Software, Inc. in the U.S.A. and/or foreign countries.  
-The Power Glove is a registered trademark of Mattel, Inc.*
+The Power Glove is a registered trademark of Mattel, Inc.
 
 The next bit is in caps so it's probably important.
 
