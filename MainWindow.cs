@@ -91,10 +91,7 @@ namespace GTAPanicButton
 
             InitialiseBackgroundWorker();
 
-            if (startupRegKey.GetValueNames().Contains("GTA Panic Button"))
-                checkBoxStartup.Checked = true;
-            else
-                checkBoxStartup.Checked = false;
+            checkBoxStartup.Checked = startupRegKey.GetValueNames().Contains("GTA Panic Button") ? true : false;
 
             balloonStatus = true;
         }
