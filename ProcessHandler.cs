@@ -119,6 +119,5 @@ namespace GTAPanicButton
                 Environment.Exit(1);
             }
         }
-
     }
 }

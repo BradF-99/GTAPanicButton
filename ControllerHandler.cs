@@ -1,24 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Collections.Concurrent;
 using SharpDX.XInput;
 
 namespace GTAPanicButton
 {
-    class ControllerInput
+    class ControllerHandler
     {
-        Controller controller;
+        readonly Controller controller;
         Gamepad gamepad;
         public bool connected = false;
         public float leftTrigger, rightTrigger;
+        public ConcurrentDictionary<string, bool> buttonStatus = new ConcurrentDictionary<string, bool>(Environment.ProcessorCount, Environment.ProcessorCount * 2);
 
-        public ControllerInput()
+        public ControllerHandler()
         {
             controller = new Controller(UserIndex.One);
             connected = controller.IsConnected;
+            buttonStatus.TryAdd("Exit", false);
+            buttonStatus.TryAdd("Suspend", false);
         }
 
         // Call this method to update all class values
@@ -36,12 +35,17 @@ namespace GTAPanicButton
             {
                 if (gamepad.Buttons == GamepadButtonFlags.LeftShoulder && gamepad.Buttons == GamepadButtonFlags.RightShoulder)
                 {
-                    // quit game
+                    buttonStatus.TryUpdate("Exit", false, true);
                 }
                 else if (gamepad.Buttons == GamepadButtonFlags.LeftThumb && gamepad.Buttons == GamepadButtonFlags.RightThumb)
                 {
-                    // suspend game
+                    buttonStatus.TryUpdate("Suspend", false, true);
                 }
+            }
+            else
+            {
+                buttonStatus.TryUpdate("Exit", true, false);
+                buttonStatus.TryUpdate("Suspend", true, false);
             }
         }
     }
