@@ -14,7 +14,7 @@ This isn't a cheat / hack / menu etc. as it never injects itself in to the game 
 
 ## Things you need
 
-* **[.NET Framework 4.0](https://dotnet.microsoft.com/download/dotnet-framework/net40)** (preferably the latest version of the framework)
+* **[.NET Framework 4.5](https://dotnet.microsoft.com/download/dotnet-framework/net40)** (preferably the latest version of the framework)
 * A copy of the game might help also.
 
 ## Troubleshooting
