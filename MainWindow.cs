@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-using System.Diagnostics;
 using System.Threading;
 using System.ComponentModel;
 using System.Speech.Synthesis;
@@ -25,22 +24,6 @@ namespace GTAPanicButton
         private const int hotkeySuspend = 1;
         private const int hotkeyKill = 2;
 
-        [Flags]
-        private enum ThreadAccess : int
-        {
-            TERMINATE = (0x0001),
-            SUSPEND_RESUME = (0x0002)
-        }
-
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr OpenThread(ThreadAccess dwDesiredAccess, bool bInheritHandle, uint dwThreadId);
-        [DllImport("kernel32.dll")]
-        private static extern uint SuspendThread(IntPtr hThread);
-        [DllImport("kernel32.dll")]
-        private static extern int ResumeThread(IntPtr hThread);
-        [DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern bool CloseHandle(IntPtr handle);
-
         private bool soundCues = false;
         private bool balloonStatus = false; // set to false when balloon is shown (initialised true during window creation for hide arg)
         private bool processCheckFlag = true; // set to false if nocheck arg is passed
@@ -50,8 +33,7 @@ namespace GTAPanicButton
         private readonly OperatingSystem osInfo = System.Environment.OSVersion;
 
         private RegistryKey startupRegKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-
-
+        
         public MainWindow(string[] args)
         {
             InitializeComponent();
@@ -79,7 +61,7 @@ namespace GTAPanicButton
             }
 
             if (processCheckFlag)
-                CheckProcess();
+                ProcessHandler.CheckProcess();
 
             speech = new SpeechSynthesizer();
             speech.SetOutputToDefaultAudioDevice();
@@ -107,7 +89,7 @@ namespace GTAPanicButton
             }
             else if (m.Msg == hotkeyNum && m.WParam.ToInt32() == hotkeyKill)
             {
-                KillGTASocialClubProcess();
+                ProcessHandler.KillGTASocialClubProcess();
                 if (soundCues)
                     speech.SpeakAsync("GTA processes destroyed.");
             }
@@ -135,7 +117,7 @@ namespace GTAPanicButton
 
             try
             {
-                SuspendProcess();
+                ProcessHandler.SuspendProcess();
 
                 if (soundCues)
                     speech.SpeakAsync("GTA suspended, one moment.");
@@ -146,7 +128,7 @@ namespace GTAPanicButton
                     worker.ReportProgress((i + 1) * 10);
                 }
 
-                ResumeProcess();
+                ProcessHandler.ResumeProcess();
 
                 if (soundCues)
                     speech.SpeakAsync("GTA resumed.");
@@ -177,6 +159,7 @@ namespace GTAPanicButton
         {
             progressBarTimer.Value = e.ProgressPercentage;
         }
+
         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             progressBarTimer.Value = 0;
@@ -188,100 +171,6 @@ namespace GTAPanicButton
                             "message as a screenshot. Exception: " +
                             e.Error.Message, "Error", MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
-            }
-        }
-
-        private static void SuspendProcess()
-        {
-            var gtaProcess = Process.GetProcessesByName("GTA5")[0]; // there's probably only going to be one instance
-
-            foreach (ProcessThread thread in gtaProcess.Threads)
-            {
-                IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)thread.Id);
-
-                if (pOpenThread == IntPtr.Zero)
-                {
-                    continue;
-                }
-
-                SuspendThread(pOpenThread);
-                CloseHandle(pOpenThread);
-            }
-        }
-
-        private static void ResumeProcess()
-        {
-            Process gtaProcess = Process.GetProcessesByName("GTA5")[0];
-
-            foreach (ProcessThread thread in gtaProcess.Threads)
-            {
-                IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)thread.Id);
-
-                if (pOpenThread == IntPtr.Zero)
-                {
-                    continue;
-                }
-
-                var suspendCount = 0;
-                do
-                {
-                    suspendCount = ResumeThread(pOpenThread);
-                } while (suspendCount > 0);
-
-                CloseHandle(pOpenThread);
-            }
-        }
-
-        private static void KillGTASocialClubProcess()
-        {
-            try
-            {
-                Process gtaProcess = Process.GetProcessesByName("GTA5")[0];
-                gtaProcess.Kill();
-
-                Process gtaLauncherProcess = Process.GetProcessesByName("GTAVLauncher")[0];
-                gtaLauncherProcess.Kill();
-
-                Process[] socialClubProcesses = Process.GetProcessesByName("SocialClubHelper");
-                if (socialClubProcesses.Length <= 0)
-                    return;
-
-                foreach (Process process in socialClubProcesses)
-                {
-                    process.Kill();
-                }
-            }
-            catch (Exception e)
-            {
-                if (e is IndexOutOfRangeException) {
-                     MessageBox.Show("A process could not be found. You can " +
-                                     "probably ignore this error.", "Warning", 
-                                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                } else {
-                     MessageBox.Show("Something went wrong. " +
-                                     "Please make an issue on the Github " +
-                                     "repository and include this error " +
-                                     "message as a screenshot. Exception: " +
-                                     e.Message, "Error", MessageBoxButtons.OK,
-                                     MessageBoxIcon.Error);
-                }
-            }
-        }
-
-        private static void CheckProcess()
-        {
-            try
-            {
-                Process process = Process.GetProcessesByName("GTA5")[0];
-            }
-            catch (IndexOutOfRangeException)
-            {
-                MessageBox.Show("The GTA game process could not be found. " +
-                                "Maybe try relaunching this program as an administrator.",
-                                "Error",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
-                Environment.Exit(1);
             }
         }
 
