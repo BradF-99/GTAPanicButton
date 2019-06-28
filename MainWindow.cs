@@ -207,22 +207,7 @@ namespace GTAPanicButton
                 notifyIcon.Visible = true;
                 if (balloonStatus)
                 {
-                    // thanks microsoft / windows 10
-                    // i refuse to import UWP and the Windows 10 SDK just for a single notification
-
-                    if (osInfo.Version.Major == 6 && osInfo.Version.Minor == 2 && osInfo.Version.Build == 9200) 
-                    {
-                        MessageBox.Show("The GTA Panic Button will minimise to your task bar.\n" +
-                            "Click on the icon in the task bar to maximise it again.\n" +
-                            "To close, click this icon and close the program.\n\n" +
-                            "Usually this message would show as a balloon pop-up but " +
-                            "Windows 10 doesn't do those anymore.", "Quick Message for Windows 10 users",
-                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                    else
-                    {
-                        notifyIcon.ShowBalloonTip(7000); // 7 seconds
-                    }
+                    notifyIcon.ShowBalloonTip(7000); // 7 seconds
                 }
                 this.Hide();
                 this.ShowInTaskbar = false;
