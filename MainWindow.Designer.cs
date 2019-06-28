@@ -117,8 +117,8 @@
             // 
             this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.notifyIcon.BalloonTipText = "The GTA Panic Button has minimised to your task bar. Click on the icon in the tas" +
-    "k bar to maximise it again. To close, click this icon and close the program.";
-            this.notifyIcon.BalloonTipTitle = "GTA Panic Button";
+    "k bar to maximise it again.";
+            this.notifyIcon.BalloonTipTitle = "I\'m down here!";
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "GTA Panic Button";
             this.notifyIcon.Visible = true;
