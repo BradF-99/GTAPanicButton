@@ -29,9 +29,6 @@ namespace GTAPanicButton
         private bool processCheckFlag = true; // set to false if nocheck arg is passed
 
         private readonly SpeechSynthesizer speech;
-
-        private readonly OperatingSystem osInfo = System.Environment.OSVersion;
-
         private RegistryKey startupRegKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
         
         public MainWindow(string[] args)
