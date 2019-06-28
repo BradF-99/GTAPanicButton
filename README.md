@@ -14,7 +14,7 @@ This isn't a cheat / hack / menu etc. as it never injects itself in to the game 
 
 ## Things you need
 
-* **[.NET Framework 4.0](https://dotnet.microsoft.com/download/dotnet-framework/net40)** (preferably the latest version of the framework)
+* **[.NET Framework 4.5](https://dotnet.microsoft.com/download/dotnet-framework/net40)** (preferably the latest version of the framework)
 * A copy of the game might help also.
 
 ## Troubleshooting
@@ -48,6 +48,8 @@ Thank you to the following people!
 
 * *Controller Support* - press the panic button with your Xbox, PlayStation or Mattel Power Glove controller!
 * *A nicer interface* - I don't know how to improve on perfection but I can certainly try!
+* *Settings Window* - keeps all settings in one centralised location!
+* *Changeable key shortcuts* - pick your own button combos!
 * *Apple HomeKit / Amazon Alexa / Google Home Integration* (not really)
 
 ## Contributing

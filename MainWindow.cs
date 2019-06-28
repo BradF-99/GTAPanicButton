@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-using System.Diagnostics;
 using System.Threading;
 using System.ComponentModel;
 using System.Speech.Synthesis;
-using Microsoft.Win32;
 using System.Linq;
+using Microsoft.Win32;
 
 namespace GTAPanicButton
 {
@@ -25,32 +25,14 @@ namespace GTAPanicButton
         private const int hotkeySuspend = 1;
         private const int hotkeyKill = 2;
 
-        [Flags]
-        private enum ThreadAccess : int
-        {
-            TERMINATE = (0x0001),
-            SUSPEND_RESUME = (0x0002)
-        }
-
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr OpenThread(ThreadAccess dwDesiredAccess, bool bInheritHandle, uint dwThreadId);
-        [DllImport("kernel32.dll")]
-        private static extern uint SuspendThread(IntPtr hThread);
-        [DllImport("kernel32.dll")]
-        private static extern int ResumeThread(IntPtr hThread);
-        [DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern bool CloseHandle(IntPtr handle);
-
         private bool soundCues = false;
         private bool balloonStatus = false; // set to false when balloon is shown (initialised true during window creation for hide arg)
-        private bool processCheckFlag = true; // set to false if nocheck arg is passed
-
+        private readonly bool processCheckFlag = true; // set to false if nocheck arg is passed
+       
         private readonly SpeechSynthesizer speech;
-
-        private readonly OperatingSystem osInfo = System.Environment.OSVersion;
-
-        private RegistryKey startupRegKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-
+        private readonly RegistryKey startupRegKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+        private readonly ControllerHandler controller = new ControllerHandler();
+        private IDictionary<string, bool> controllerStatus;
 
         public MainWindow(string[] args)
         {
@@ -79,17 +61,17 @@ namespace GTAPanicButton
             }
 
             if (processCheckFlag)
-                CheckProcess();
+                ProcessHandler.CheckProcess();
 
             speech = new SpeechSynthesizer();
             speech.SetOutputToDefaultAudioDevice();
-
+            
             // Keycodes: Alt = 1, Ctrl = 2, Shift = 4, Win = 8 (add together to change modifier)
             // Ctrl + Shift = 6
             RegisterHotKey(this.Handle, hotkeyKill, 6, (int)Keys.F11);
             RegisterHotKey(this.Handle, hotkeySuspend, 6, (int)Keys.F12);
 
-            InitialiseBackgroundWorker();
+            InitialiseBackgroundWorkers();
 
             checkBoxStartup.Checked = startupRegKey.GetValueNames().Contains("GTA Panic Button") ? true : false;
 
@@ -100,42 +82,51 @@ namespace GTAPanicButton
         {
             if (m.Msg == hotkeyNum && m.WParam.ToInt32() == hotkeySuspend)
             {
-                if (backgroundWorker.IsBusy != true)
-                {
-                    backgroundWorker.RunWorkerAsync();
-                }
+                if (!processSuspendWorker.IsBusy)
+                    processSuspendWorker.RunWorkerAsync();
             }
             else if (m.Msg == hotkeyNum && m.WParam.ToInt32() == hotkeyKill)
             {
-                KillGTASocialClubProcess();
-                if (soundCues)
-                    speech.SpeakAsync("GTA processes destroyed.");
+                if(!processDestroyWorker.IsBusy)
+                    processDestroyWorker.RunWorkerAsync();
             }
 
             base.WndProc(ref m);
         }
-
-        private void InitialiseBackgroundWorker()
+        
+        private void InitialiseBackgroundWorkers()
         {
-            backgroundWorker.DoWork +=
-                new DoWorkEventHandler(backgroundWorker_DoWork);
-            backgroundWorker.RunWorkerCompleted +=
-                new RunWorkerCompletedEventHandler(
-            backgroundWorker_RunWorkerCompleted);
-            backgroundWorker.ProgressChanged +=
-                new ProgressChangedEventHandler(
-            backgroundWorker_ProgressChanged);
+            processSuspendWorker.DoWork +=
+                new DoWorkEventHandler(ProcessSuspendWorker_DoWork);
+            processSuspendWorker.RunWorkerCompleted +=
+                new RunWorkerCompletedEventHandler(ProcessSuspendWorker_RunWorkerCompleted);
+            processSuspendWorker.ProgressChanged +=
+                new ProgressChangedEventHandler(ProcessSuspendWorker_ProgressChanged);
+            processSuspendWorker.WorkerReportsProgress = true;
 
-            backgroundWorker.WorkerReportsProgress = true;
+            processDestroyWorker.DoWork +=
+                new DoWorkEventHandler(ProcessDestroyWorker_DoWork);
+            processDestroyWorker.RunWorkerCompleted +=
+                new RunWorkerCompletedEventHandler(ProcessDestroyWorker_RunWorkerCompleted);
+            processDestroyWorker.WorkerReportsProgress = true;
+
+            controllerWorker.DoWork +=
+                new DoWorkEventHandler(ControllerWorker_DoWork);
+            controllerWorker.RunWorkerCompleted +=
+                new RunWorkerCompletedEventHandler(ControllerWorker_RunWorkerCompleted);
+            controllerWorker.WorkerReportsProgress = true;
+
+            if (controller.connected)
+                controllerWorker.RunWorkerAsync();
         }
 
-        private void backgroundWorker_DoWork(object sender, DoWorkEventArgs args)
+        private void ProcessSuspendWorker_DoWork(object sender, DoWorkEventArgs args)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
 
             try
             {
-                SuspendProcess();
+                ProcessHandler.SuspendProcess();
 
                 if (soundCues)
                     speech.SpeakAsync("GTA suspended, one moment.");
@@ -146,7 +137,7 @@ namespace GTAPanicButton
                     worker.ReportProgress((i + 1) * 10);
                 }
 
-                ResumeProcess();
+                ProcessHandler.ResumeProcess();
 
                 if (soundCues)
                     speech.SpeakAsync("GTA resumed.");
@@ -157,8 +148,7 @@ namespace GTAPanicButton
             {
                 if (e is IndexOutOfRangeException)
                 {
-                    MessageBox.Show("A process could not be found. You can " +
-                                    "probably ignore this error.", "Warning",
+                    MessageBox.Show("A process could not be found. Is GTA running?", "Warning",
                                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
@@ -173,11 +163,12 @@ namespace GTAPanicButton
             }
         }
 
-        private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void ProcessSuspendWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             progressBarTimer.Value = e.ProgressPercentage;
         }
-        private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+
+        private void ProcessSuspendWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             progressBarTimer.Value = 0;
             if(e.Error != null)
@@ -191,98 +182,64 @@ namespace GTAPanicButton
             }
         }
 
-        private static void SuspendProcess()
+        private void ProcessDestroyWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            var gtaProcess = Process.GetProcessesByName("GTA5")[0]; // there's probably only going to be one instance
+            ProcessHandler.KillGTASocialClubProcess();
+            if (soundCues)
+                speech.SpeakAsync("GTA processes destroyed.");
+            Thread.Sleep(5000); // stops it from triggering again
+        }
 
-            foreach (ProcessThread thread in gtaProcess.Threads)
+        private void ProcessDestroyWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Error != null)
             {
-                IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)thread.Id);
-
-                if (pOpenThread == IntPtr.Zero)
-                {
-                    continue;
-                }
-
-                SuspendThread(pOpenThread);
-                CloseHandle(pOpenThread);
+                MessageBox.Show("Something went wrong. " +
+                            "Please make an issue on the Github " +
+                            "repository and include this error " +
+                            "message as a screenshot. Exception: " +
+                            e.Error.Message, "Error", MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
             }
         }
 
-        private static void ResumeProcess()
+        private void ControllerWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            Process gtaProcess = Process.GetProcessesByName("GTA5")[0];
-
-            foreach (ProcessThread thread in gtaProcess.Threads)
+            if (controller.connected)
             {
-                IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)thread.Id);
-
-                if (pOpenThread == IntPtr.Zero)
-                {
-                    continue;
-                }
-
-                var suspendCount = 0;
-                do
-                {
-                    suspendCount = ResumeThread(pOpenThread);
-                } while (suspendCount > 0);
-
-                CloseHandle(pOpenThread);
+                controllerStatus = controller.Update();
             }
+            Thread.Sleep(100);
         }
 
-        private static void KillGTASocialClubProcess()
+        private void ControllerWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            try
+            if (e.Error != null)
             {
-                Process gtaProcess = Process.GetProcessesByName("GTA5")[0];
-                gtaProcess.Kill();
+                MessageBox.Show("Something went wrong. " +
+                            "Please make an issue on the Github " +
+                            "repository and include this error " +
+                            "message as a screenshot. Exception: " +
+                            e.Error.Message, "Error", MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+            }
 
-                Process gtaLauncherProcess = Process.GetProcessesByName("GTAVLauncher")[0];
-                gtaLauncherProcess.Kill();
-
-                Process[] socialClubProcesses = Process.GetProcessesByName("SocialClubHelper");
-                if (socialClubProcesses.Length <= 0)
-                    return;
-
-                foreach (Process process in socialClubProcesses)
+            if (!controllerWorker.CancellationPending) { 
+                if (!controllerStatus.Equals(null) || !controller.connected)
                 {
-                    process.Kill();
+                    if (controllerStatus["Suspend"])
+                    {
+                        if (processSuspendWorker.IsBusy != true)
+                            processSuspendWorker.RunWorkerAsync();
+                    }
+                    else if (controllerStatus["Exit"])
+                    {
+                        if (processDestroyWorker.IsBusy != true)
+                            processDestroyWorker.RunWorkerAsync();
+                    }
+                    controllerWorker.RunWorkerAsync();
                 }
-            }
-            catch (Exception e)
-            {
-                if (e is IndexOutOfRangeException) {
-                     MessageBox.Show("A process could not be found. You can " +
-                                     "probably ignore this error.", "Warning", 
-                                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                } else {
-                     MessageBox.Show("Something went wrong. " +
-                                     "Please make an issue on the Github " +
-                                     "repository and include this error " +
-                                     "message as a screenshot. Exception: " +
-                                     e.Message, "Error", MessageBoxButtons.OK,
-                                     MessageBoxIcon.Error);
-                }
-            }
-        }
-
-        private static void CheckProcess()
-        {
-            try
-            {
-                Process process = Process.GetProcessesByName("GTA5")[0];
-            }
-            catch (IndexOutOfRangeException)
-            {
-                MessageBox.Show("The GTA game process could not be found. " +
-                                "Maybe try relaunching this program as an administrator.",
-                                "Error",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
-                Environment.Exit(1);
-            }
+            } 
         }
 
         private void BtnCredits_Click(object sender, EventArgs e)
@@ -327,7 +284,7 @@ namespace GTAPanicButton
             }
         }
 
-        private void notifyIcon_MouseClick(object sender, MouseEventArgs e)
+        private void NotifyIcon_MouseClick(object sender, MouseEventArgs e)
         {
             Show();
             this.WindowState = FormWindowState.Normal;
