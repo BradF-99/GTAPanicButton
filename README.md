@@ -48,6 +48,8 @@ Thank you to the following people!
 
 * *Controller Support* - press the panic button with your Xbox, PlayStation or Mattel Power Glove controller!
 * *A nicer interface* - I don't know how to improve on perfection but I can certainly try!
+* *Settings Window* - keeps all settings in one centralised location!
+* *Changeable key shortcuts* - pick your own button combos!
 * *Apple HomeKit / Amazon Alexa / Google Home Integration* (not really)
 
 ## Contributing
