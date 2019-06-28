@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.ComponentModel;
 
 namespace GTAPanicButton
 {
@@ -23,9 +24,10 @@ namespace GTAPanicButton
         [DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern bool CloseHandle(IntPtr handle);
 
+
         public static void SuspendProcess()
         {
-            var gtaProcess = Process.GetProcessesByName("GTA5")[0]; // there's probably only going to be one instance
+            Process gtaProcess = Process.GetProcessesByName("GTA5")[0]; // there's probably only going to be one instance
 
             foreach (ProcessThread thread in gtaProcess.Threads)
             {
@@ -82,6 +84,7 @@ namespace GTAPanicButton
                 {
                     process.Kill();
                 }
+
             }
             catch (Exception e)
             {
@@ -90,6 +93,10 @@ namespace GTAPanicButton
                     MessageBox.Show("A process could not be found. You can " +
                                     "probably ignore this error.", "Warning",
                                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else if (e is Win32Exception)
+                {
+                    // fail silently, only seems to happen with controller input
                 }
                 else
                 {

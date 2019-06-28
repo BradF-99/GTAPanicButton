@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.ComponentModel;
 using System.Speech.Synthesis;
-using Microsoft.Win32;
 using System.Linq;
+using Microsoft.Win32;
 
 namespace GTAPanicButton
 {
@@ -26,11 +27,13 @@ namespace GTAPanicButton
 
         private bool soundCues = false;
         private bool balloonStatus = false; // set to false when balloon is shown (initialised true during window creation for hide arg)
-        private bool processCheckFlag = true; // set to false if nocheck arg is passed
-
+        private readonly bool processCheckFlag = true; // set to false if nocheck arg is passed
+       
         private readonly SpeechSynthesizer speech;
-        private RegistryKey startupRegKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-        
+        private readonly RegistryKey startupRegKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+        private readonly ControllerHandler controller = new ControllerHandler();
+        private IDictionary<string, bool> controllerStatus;
+
         public MainWindow(string[] args)
         {
             InitializeComponent();
@@ -63,12 +66,14 @@ namespace GTAPanicButton
             speech = new SpeechSynthesizer();
             speech.SetOutputToDefaultAudioDevice();
 
+            
+
             // Keycodes: Alt = 1, Ctrl = 2, Shift = 4, Win = 8 (add together to change modifier)
             // Ctrl + Shift = 6
             RegisterHotKey(this.Handle, hotkeyKill, 6, (int)Keys.F11);
             RegisterHotKey(this.Handle, hotkeySuspend, 6, (int)Keys.F12);
 
-            InitialiseBackgroundWorker();
+            InitialiseBackgroundWorkers();
 
             checkBoxStartup.Checked = startupRegKey.GetValueNames().Contains("GTA Panic Button") ? true : false;
 
@@ -79,9 +84,9 @@ namespace GTAPanicButton
         {
             if (m.Msg == hotkeyNum && m.WParam.ToInt32() == hotkeySuspend)
             {
-                if (backgroundWorker.IsBusy != true)
+                if (processHandlerWorker.IsBusy != true)
                 {
-                    backgroundWorker.RunWorkerAsync();
+                    processHandlerWorker.RunWorkerAsync();
                 }
             }
             else if (m.Msg == hotkeyNum && m.WParam.ToInt32() == hotkeyKill)
@@ -94,21 +99,25 @@ namespace GTAPanicButton
             base.WndProc(ref m);
         }
 
-        private void InitialiseBackgroundWorker()
+        private void InitialiseBackgroundWorkers()
         {
-            backgroundWorker.DoWork +=
-                new DoWorkEventHandler(backgroundWorker_DoWork);
-            backgroundWorker.RunWorkerCompleted +=
-                new RunWorkerCompletedEventHandler(
-            backgroundWorker_RunWorkerCompleted);
-            backgroundWorker.ProgressChanged +=
-                new ProgressChangedEventHandler(
-            backgroundWorker_ProgressChanged);
+            processHandlerWorker.DoWork +=
+                new DoWorkEventHandler(ProcessHandlerWorker_DoWork);
+            processHandlerWorker.RunWorkerCompleted +=
+                new RunWorkerCompletedEventHandler(ProcessHandlerWorker_RunWorkerCompleted);
+            processHandlerWorker.ProgressChanged +=
+                new ProgressChangedEventHandler(ProcessHandlerWorker_ProgressChanged);
+            processHandlerWorker.WorkerReportsProgress = true;
 
-            backgroundWorker.WorkerReportsProgress = true;
+            controllerWorker.DoWork +=
+                new DoWorkEventHandler(ControllerWorker_DoWork);
+            controllerWorker.RunWorkerCompleted +=
+                new RunWorkerCompletedEventHandler(ControllerWorker_RunWorkerCompleted);
+            if(controller.connected)
+                controllerWorker.RunWorkerAsync();
         }
 
-        private void backgroundWorker_DoWork(object sender, DoWorkEventArgs args)
+        private void ProcessHandlerWorker_DoWork(object sender, DoWorkEventArgs args)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
 
@@ -152,12 +161,12 @@ namespace GTAPanicButton
             }
         }
 
-        private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void ProcessHandlerWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             progressBarTimer.Value = e.ProgressPercentage;
         }
 
-        private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void ProcessHandlerWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             progressBarTimer.Value = 0;
             if(e.Error != null)
@@ -169,6 +178,46 @@ namespace GTAPanicButton
                             e.Error.Message, "Error", MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
             }
+        }
+
+        private void ControllerWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            if (controller.connected)
+            {
+                controllerStatus = controller.Update();
+            }
+            Thread.Sleep(100);
+        }
+
+        private void ControllerWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Error != null)
+            {
+                MessageBox.Show("Something went wrong. " +
+                            "Please make an issue on the Github " +
+                            "repository and include this error " +
+                            "message as a screenshot. Exception: " +
+                            e.Error.Message, "Error", MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+            }
+
+            if (!controllerWorker.CancellationPending) { 
+                if (!controllerStatus.Equals(null) || !controller.connected)
+                {
+                    if (controllerStatus["Suspend"])
+                    {
+                        if (processHandlerWorker.IsBusy != true)
+                            processHandlerWorker.RunWorkerAsync();
+                    }
+                    else if (controllerStatus["Exit"])
+                    {
+                        ProcessHandler.KillGTASocialClubProcess();
+                        if (soundCues)
+                            speech.SpeakAsync("GTA processes destroyed.");
+                    }
+                    controllerWorker.RunWorkerAsync();
+                }
+            } 
         }
 
         private void BtnCredits_Click(object sender, EventArgs e)
@@ -213,7 +262,7 @@ namespace GTAPanicButton
             }
         }
 
-        private void notifyIcon_MouseClick(object sender, MouseEventArgs e)
+        private void NotifyIcon_MouseClick(object sender, MouseEventArgs e)
         {
             Show();
             this.WindowState = FormWindowState.Normal;

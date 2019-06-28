@@ -37,9 +37,10 @@
             this.btnCredits = new System.Windows.Forms.Button();
             this.checkboxBeep = new System.Windows.Forms.CheckBox();
             this.progressBarTimer = new System.Windows.Forms.ProgressBar();
-            this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.processHandlerWorker = new System.ComponentModel.BackgroundWorker();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.checkBoxStartup = new System.Windows.Forms.CheckBox();
+            this.controllerWorker = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // labelMain
@@ -122,7 +123,7 @@
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "GTA Panic Button";
             this.notifyIcon.Visible = true;
-            this.notifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseClick);
+            this.notifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.NotifyIcon_MouseClick);
             // 
             // checkBoxStartup
             // 
@@ -169,9 +170,10 @@
         private System.Windows.Forms.Button btnCredits;
         private System.Windows.Forms.CheckBox checkboxBeep;
         private System.Windows.Forms.ProgressBar progressBarTimer;
-        private System.ComponentModel.BackgroundWorker backgroundWorker;
+        private System.ComponentModel.BackgroundWorker processHandlerWorker;
         private System.Windows.Forms.NotifyIcon notifyIcon;
         private System.Windows.Forms.CheckBox checkBoxStartup;
+        private System.ComponentModel.BackgroundWorker controllerWorker;
     }
 }
 
