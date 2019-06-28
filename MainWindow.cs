@@ -65,9 +65,7 @@ namespace GTAPanicButton
 
             speech = new SpeechSynthesizer();
             speech.SetOutputToDefaultAudioDevice();
-
             
-
             // Keycodes: Alt = 1, Ctrl = 2, Shift = 4, Win = 8 (add together to change modifier)
             // Ctrl + Shift = 6
             RegisterHotKey(this.Handle, hotkeyKill, 6, (int)Keys.F11);
@@ -84,9 +82,9 @@ namespace GTAPanicButton
         {
             if (m.Msg == hotkeyNum && m.WParam.ToInt32() == hotkeySuspend)
             {
-                if (processHandlerWorker.IsBusy != true)
+                if (processSuspendWorker.IsBusy != true)
                 {
-                    processHandlerWorker.RunWorkerAsync();
+                    processSuspendWorker.RunWorkerAsync();
                 }
             }
             else if (m.Msg == hotkeyNum && m.WParam.ToInt32() == hotkeyKill)
@@ -98,26 +96,34 @@ namespace GTAPanicButton
 
             base.WndProc(ref m);
         }
-
+        
         private void InitialiseBackgroundWorkers()
         {
-            processHandlerWorker.DoWork +=
-                new DoWorkEventHandler(ProcessHandlerWorker_DoWork);
-            processHandlerWorker.RunWorkerCompleted +=
-                new RunWorkerCompletedEventHandler(ProcessHandlerWorker_RunWorkerCompleted);
-            processHandlerWorker.ProgressChanged +=
-                new ProgressChangedEventHandler(ProcessHandlerWorker_ProgressChanged);
-            processHandlerWorker.WorkerReportsProgress = true;
+            processSuspendWorker.DoWork +=
+                new DoWorkEventHandler(ProcessSuspendWorker_DoWork);
+            processSuspendWorker.RunWorkerCompleted +=
+                new RunWorkerCompletedEventHandler(ProcessSuspendWorker_RunWorkerCompleted);
+            processSuspendWorker.ProgressChanged +=
+                new ProgressChangedEventHandler(ProcessSuspendWorker_ProgressChanged);
+            processSuspendWorker.WorkerReportsProgress = true;
+
+            processDestroyWorker.DoWork +=
+                new DoWorkEventHandler(ProcessDestroyWorker_DoWork);
+            processDestroyWorker.RunWorkerCompleted +=
+                new RunWorkerCompletedEventHandler(ProcessDestroyWorker_RunWorkerCompleted);
+            processDestroyWorker.WorkerReportsProgress = true;
 
             controllerWorker.DoWork +=
                 new DoWorkEventHandler(ControllerWorker_DoWork);
             controllerWorker.RunWorkerCompleted +=
                 new RunWorkerCompletedEventHandler(ControllerWorker_RunWorkerCompleted);
-            if(controller.connected)
+            controllerWorker.WorkerReportsProgress = true;
+
+            if (controller.connected)
                 controllerWorker.RunWorkerAsync();
         }
 
-        private void ProcessHandlerWorker_DoWork(object sender, DoWorkEventArgs args)
+        private void ProcessSuspendWorker_DoWork(object sender, DoWorkEventArgs args)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
 
@@ -161,15 +167,36 @@ namespace GTAPanicButton
             }
         }
 
-        private void ProcessHandlerWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void ProcessSuspendWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             progressBarTimer.Value = e.ProgressPercentage;
         }
 
-        private void ProcessHandlerWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void ProcessSuspendWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             progressBarTimer.Value = 0;
             if(e.Error != null)
+            {
+                MessageBox.Show("Something went wrong. " +
+                            "Please make an issue on the Github " +
+                            "repository and include this error " +
+                            "message as a screenshot. Exception: " +
+                            e.Error.Message, "Error", MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+            }
+        }
+
+        private void ProcessDestroyWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            ProcessHandler.KillGTASocialClubProcess();
+            if (soundCues)
+                speech.SpeakAsync("GTA processes destroyed.");
+            Thread.Sleep(1000); // stops it from triggering again
+        }
+
+        private void ProcessDestroyWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Error != null)
             {
                 MessageBox.Show("Something went wrong. " +
                             "Please make an issue on the Github " +
@@ -206,14 +233,13 @@ namespace GTAPanicButton
                 {
                     if (controllerStatus["Suspend"])
                     {
-                        if (processHandlerWorker.IsBusy != true)
-                            processHandlerWorker.RunWorkerAsync();
+                        if (processSuspendWorker.IsBusy != true)
+                            processSuspendWorker.RunWorkerAsync();
                     }
                     else if (controllerStatus["Exit"])
                     {
-                        ProcessHandler.KillGTASocialClubProcess();
-                        if (soundCues)
-                            speech.SpeakAsync("GTA processes destroyed.");
+                        if (processDestroyWorker.IsBusy != true)
+                            processDestroyWorker.RunWorkerAsync();
                     }
                     controllerWorker.RunWorkerAsync();
                 }

@@ -37,10 +37,11 @@
             this.btnCredits = new System.Windows.Forms.Button();
             this.checkboxBeep = new System.Windows.Forms.CheckBox();
             this.progressBarTimer = new System.Windows.Forms.ProgressBar();
-            this.processHandlerWorker = new System.ComponentModel.BackgroundWorker();
+            this.processSuspendWorker = new System.ComponentModel.BackgroundWorker();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.checkBoxStartup = new System.Windows.Forms.CheckBox();
             this.controllerWorker = new System.ComponentModel.BackgroundWorker();
+            this.processDestroyWorker = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // labelMain
@@ -170,10 +171,11 @@
         private System.Windows.Forms.Button btnCredits;
         private System.Windows.Forms.CheckBox checkboxBeep;
         private System.Windows.Forms.ProgressBar progressBarTimer;
-        private System.ComponentModel.BackgroundWorker processHandlerWorker;
+        private System.ComponentModel.BackgroundWorker processSuspendWorker;
         private System.Windows.Forms.NotifyIcon notifyIcon;
         private System.Windows.Forms.CheckBox checkBoxStartup;
         private System.ComponentModel.BackgroundWorker controllerWorker;
+        private System.ComponentModel.BackgroundWorker processDestroyWorker;
     }
 }
 
