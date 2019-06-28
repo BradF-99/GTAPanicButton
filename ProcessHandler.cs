@@ -70,20 +70,26 @@ namespace GTAPanicButton
         {
             try
             {
-                Process gtaProcess = Process.GetProcessesByName("GTA5")[0];
-                gtaProcess.Kill();
+                Process[] gtaProcess = Process.GetProcessesByName("GTA5");
+                if (gtaProcess.Length > 0)
+                    foreach (Process process in gtaProcess)
+                    {
+                        process.Kill();
+                    }
 
-                Process gtaLauncherProcess = Process.GetProcessesByName("GTAVLauncher")[0];
-                gtaLauncherProcess.Kill();
+                Process[] gtaLauncherProcess = Process.GetProcessesByName("GTAVLauncher");
+                if (gtaLauncherProcess.Length > 0)
+                    foreach (Process process in gtaLauncherProcess)
+                    {
+                        process.Kill();
+                    }
 
                 Process[] socialClubProcesses = Process.GetProcessesByName("SocialClubHelper");
-                if (socialClubProcesses.Length <= 0)
-                    return;
-
-                foreach (Process process in socialClubProcesses)
-                {
-                    process.Kill();
-                }
+                if (socialClubProcesses.Length > 0)
+                    foreach (Process process in socialClubProcesses)
+                    {
+                        process.Kill();
+                    }
 
             }
             catch (Exception e)

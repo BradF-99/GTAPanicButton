@@ -82,16 +82,13 @@ namespace GTAPanicButton
         {
             if (m.Msg == hotkeyNum && m.WParam.ToInt32() == hotkeySuspend)
             {
-                if (processSuspendWorker.IsBusy != true)
-                {
+                if (!processSuspendWorker.IsBusy)
                     processSuspendWorker.RunWorkerAsync();
-                }
             }
             else if (m.Msg == hotkeyNum && m.WParam.ToInt32() == hotkeyKill)
             {
-                ProcessHandler.KillGTASocialClubProcess();
-                if (soundCues)
-                    speech.SpeakAsync("GTA processes destroyed.");
+                if(!processDestroyWorker.IsBusy)
+                    processDestroyWorker.RunWorkerAsync();
             }
 
             base.WndProc(ref m);
@@ -151,8 +148,7 @@ namespace GTAPanicButton
             {
                 if (e is IndexOutOfRangeException)
                 {
-                    MessageBox.Show("A process could not be found. You can " +
-                                    "probably ignore this error.", "Warning",
+                    MessageBox.Show("A process could not be found. Is GTA running?", "Warning",
                                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
@@ -191,7 +187,7 @@ namespace GTAPanicButton
             ProcessHandler.KillGTASocialClubProcess();
             if (soundCues)
                 speech.SpeakAsync("GTA processes destroyed.");
-            Thread.Sleep(1000); // stops it from triggering again
+            Thread.Sleep(5000); // stops it from triggering again
         }
 
         private void ProcessDestroyWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
