@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
 using System.Diagnostics;
 
 namespace GTAPanicButton
@@ -63,37 +64,27 @@ namespace GTAPanicButton
         {
             try
             {
-                Process[] gtaProcess = Process.GetProcessesByName("GTA5");
-                if (gtaProcess.Length > 0)
-                    foreach (Process process in gtaProcess)
-                    {
-                        process.Kill();
-                    }
-
-                Process[] gtaLauncherProcess = Process.GetProcessesByName("GTAVLauncher");
-                if (gtaLauncherProcess.Length > 0)
-                    foreach (Process process in gtaLauncherProcess)
-                    {
-                        process.Kill();
-                    }
-
-                Process[] socialClubProcesses = Process.GetProcessesByName("SocialClubHelper");
-                if (socialClubProcesses.Length > 0)
-                    foreach (Process process in socialClubProcesses)
-                    {
-                        process.Kill();
-                    }
-
+                KillProcess("GTA5");
+                KillProcess("GTAVLauncher");
+                KillProcess("SocialClubHelper");
             }
             catch (Exception e)
             {
-                if (e is IndexOutOfRangeException)
+                if (e is IndexOutOfRangeException) //this shouldnt trigger anymore
                 {
                     MessageBox.Show("A process could not be found. You can " +
                                     "probably ignore this error.", "Warning",
                                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-                else
+                } else if (e is Win32Exception) //if it cant kill the process (most likely wont happen aswell unless gta is installed somewhere weird.)
+                {
+                    MessageBox.Show("Could not terminate the process. " +
+                        "Try relaunching in adminstrator mode" +
+                "then please make an issue on the Github " +
+                "repository and include this error " +
+                "message as a screenshot. Exception: " +
+                e.Message, "Error", MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+                } else
                 {
                     MessageBox.Show("Something went wrong. " +
                                     "Please make an issue on the Github " +
@@ -119,6 +110,18 @@ namespace GTAPanicButton
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
                 Environment.Exit(1);
+            }
+        }
+
+        public static void KillProcess(string ProcessName)
+        {
+            Process[] processes = Process.GetProcessesByName(ProcessName);
+            if(processes.Length > 0)
+            {
+                foreach(Process proc in processes)
+                {
+                    proc.Kill();
+                }
             }
         }
     }
