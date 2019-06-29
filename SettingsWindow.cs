@@ -13,6 +13,7 @@ namespace GTAPanicButton
             InitializeComponent();
 
             checkBoxStartup.Checked = MainWindow.startupRegKey.GetValueNames().Contains("GTA Panic Button") ? true : false;
+            checkBoxController.Checked = Properties.Settings.Default.controllerSupport ? true : false;
 
             if (gtaProcessDetected)
                 labelStatusProcess.Text += "Detected";
@@ -94,6 +95,8 @@ namespace GTAPanicButton
                 Properties.Settings.Default.soundCuesBeep = false;
                 Properties.Settings.Default.soundCuesTTS = true;
             }
+
+            Properties.Settings.Default.controllerSupport = checkBoxController.Checked ? true : false;
 
             Properties.Settings.Default.Save();
             this.Close();

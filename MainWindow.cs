@@ -98,7 +98,7 @@ namespace GTAPanicButton
             controllerWorker.WorkerReportsProgress = true;
             controllerWorker.WorkerSupportsCancellation = true;
 
-            if (controller.connected)
+            if (Properties.Settings.Default.controllerSupport && controller.connected)
                 controllerWorker.RunWorkerAsync();
         }
 
@@ -227,7 +227,7 @@ namespace GTAPanicButton
                             MessageBoxIcon.Error);
             }
 
-            if (!controllerWorker.CancellationPending) { 
+            if (!controllerWorker.CancellationPending && Properties.Settings.Default.controllerSupport) { 
                 if (!controllerStatus.Equals(null) || !controller.connected)
                 {
                     if (controllerStatus["Suspend"])
@@ -299,6 +299,11 @@ namespace GTAPanicButton
 
             soundCuesBeep = Properties.Settings.Default.soundCuesBeep;
             soundCuesTTS = Properties.Settings.Default.soundCuesTTS;
+
+            if (Properties.Settings.Default.controllerSupport && !controllerWorker.IsBusy)
+                controllerWorker.RunWorkerAsync();
+            else
+                controllerWorker.CancelAsync();
         }
     }
 }
