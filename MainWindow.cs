@@ -1,38 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.ComponentModel;
-using System.Speech.Synthesis;
-using System.Linq;
 using Microsoft.Win32;
 
 namespace GTAPanicButton
 {
     public partial class MainWindow : Form
     {
-        [DllImport("user32.dll")]
-        private static extern bool RegisterHotKey(IntPtr hWnd,
-                                                 int id,
-                                                 int fsModifiers,
-                                                 int vlc);
-        [DllImport("user32.dll")]
-        private static extern bool UnregisterHotKey(IntPtr hWnd,
-                                                   int id);
-
         private const int hotkeyNum = 0x0312; // WM_HOTKEY
-        private const int hotkeySuspend = 1;
-        private const int hotkeyKill = 2;
 
-        private bool soundCues = false;
+        private bool soundCuesBeep = Properties.Settings.Default.soundCuesBeep;  
+        private bool soundCuesTTS = Properties.Settings.Default.soundCuesTTS;
         private bool balloonStatus = false; // set to false when balloon is shown (initialised true during window creation for hide arg)
         private readonly bool processCheckFlag = true; // set to false if nocheck arg is passed
        
-        private readonly SpeechSynthesizer speech;
-        private readonly RegistryKey startupRegKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+
+        public static readonly RegistryKey startupRegKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
         private readonly ControllerHandler controller = new ControllerHandler();
         private IDictionary<string, bool> controllerStatus;
+
+        private SoundHandler soundHandler = new SoundHandler();
 
         public MainWindow(string[] args)
         {
@@ -63,29 +52,21 @@ namespace GTAPanicButton
             if (processCheckFlag)
                 ProcessHandler.CheckProcess();
 
-            speech = new SpeechSynthesizer();
-            speech.SetOutputToDefaultAudioDevice();
-            
-            // Keycodes: Alt = 1, Ctrl = 2, Shift = 4, Win = 8 (add together to change modifier)
-            // Ctrl + Shift = 6
-            RegisterHotKey(this.Handle, hotkeyKill, 6, (int)Keys.F11);
-            RegisterHotKey(this.Handle, hotkeySuspend, 6, (int)Keys.F12);
-
+            KeybindHandler.RegisterHotkeys(this);
             InitialiseBackgroundWorkers();
 
-            checkBoxStartup.Checked = startupRegKey.GetValueNames().Contains("GTA Panic Button") ? true : false;
-
             balloonStatus = true;
+            
         }
 
         protected override void WndProc(ref Message m)
         {
-            if (m.Msg == hotkeyNum && m.WParam.ToInt32() == hotkeySuspend)
+            if (m.Msg == hotkeyNum && m.WParam.ToInt32() == KeybindHandler.hotkeySuspend)
             {
                 if (!processSuspendWorker.IsBusy)
                     processSuspendWorker.RunWorkerAsync();
             }
-            else if (m.Msg == hotkeyNum && m.WParam.ToInt32() == hotkeyKill)
+            else if (m.Msg == hotkeyNum && m.WParam.ToInt32() == KeybindHandler.hotkeyKill)
             {
                 if(!processDestroyWorker.IsBusy)
                     processDestroyWorker.RunWorkerAsync();
@@ -117,7 +98,7 @@ namespace GTAPanicButton
             controllerWorker.WorkerReportsProgress = true;
             controllerWorker.WorkerSupportsCancellation = true;
 
-            if (controller.connected)
+            if (Properties.Settings.Default.controllerSupport && controller.connected)
                 controllerWorker.RunWorkerAsync();
         }
 
@@ -129,19 +110,29 @@ namespace GTAPanicButton
             {
                 ProcessHandler.SuspendProcess();
 
-                if (soundCues)
-                    speech.SpeakAsync("GTA suspended, one moment.");
-
+                if (soundCuesTTS)
+                    soundHandler.speech.SpeakAsync("GTA suspended, one moment.");
+                  
                 for (int i = 0; i < 10; i++)
                 {
-                    Thread.Sleep(1000);
+                    if (soundCuesBeep)
+                    {
+                        soundHandler.PlayBeep(false);
+                        Thread.Sleep(900); // sound will take 100ms
+                    }
+                    else
+                    {
+                        Thread.Sleep(1000);
+                    }
                     worker.ReportProgress((i + 1) * 10);
                 }
 
                 ProcessHandler.ResumeProcess();
 
-                if (soundCues)
-                    speech.SpeakAsync("GTA resumed.");
+                if (soundCuesTTS)
+                    soundHandler.speech.SpeakAsync("GTA resumed.");
+                else if (soundCuesBeep)
+                    soundHandler.PlayBeep(true);
 
                 Thread.Sleep(500);
             }
@@ -186,8 +177,10 @@ namespace GTAPanicButton
         private void ProcessDestroyWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             ProcessHandler.KillGTASocialClubProcess();
-            if (soundCues)
-                speech.SpeakAsync("GTA processes destroyed.");
+            if (soundCuesTTS)
+                soundHandler.speech.SpeakAsync("GTA processes destroyed.");
+            else if (soundCuesBeep)
+                soundHandler.PlayBeep(true);
             Thread.Sleep(5000); // stops it from triggering again
         }
 
@@ -236,7 +229,7 @@ namespace GTAPanicButton
                             MessageBoxIcon.Error);
             }
 
-            if (!controllerWorker.CancellationPending) { 
+            if (!controllerWorker.CancellationPending && Properties.Settings.Default.controllerSupport) { 
                 if (!controllerStatus.Equals(null) || !controller.connected)
                 {
                     if (controllerStatus["Suspend"])
@@ -271,19 +264,6 @@ namespace GTAPanicButton
                             MessageBoxIcon.Information);
         }
 
-        private void CheckboxBeep_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkboxBeep.Checked)
-            {
-                soundCues = true;
-                speech.SpeakAsync("Hello!");
-            }
-            else
-            {
-                soundCues = false;
-            }
-        }
-
         private void MainWindow_Resize(object sender, EventArgs e)
         {
             if (this.WindowState == FormWindowState.Minimized)
@@ -311,45 +291,21 @@ namespace GTAPanicButton
 
         private void MainWindow_FormClosed(object sender, FormClosedEventArgs e) // clean up after ourselves
         {
-            UnregisterHotKey(this.Handle, hotkeyKill);
-            UnregisterHotKey(this.Handle, hotkeySuspend);
+            KeybindHandler.UnregisterHotkeys(this);
         }
 
-        private void CheckBoxStartup_CheckedChanged(object sender, EventArgs e)
+        private void ButtonOptions_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (checkBoxStartup.Checked)
-                    startupRegKey.SetValue("GTA Panic Button", "\"" + Application.ExecutablePath + "\" /nocheck /hide");
-                else
-                    startupRegKey.DeleteValue("GTA Panic Button", true);
-            }
-            catch (Exception ex)
-            {
-                if(ex is ArgumentException)
-                {
-                    MessageBox.Show("The registry key was not found. Maybe it was deleted already.",
-                                "Error",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
-                    return;
-                }
-                else
-                {
-                    string msgModifier;
-                    if (checkBoxStartup.Checked)
-                        msgModifier = "creating";
-                    else
-                        msgModifier = "deleting";
-                        
-                    MessageBox.Show("We had a problem "+ msgModifier +" the registry key." +
-                                "Maybe try restarting the program as administrator.",
-                                "Error",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
-                    return;
-                }
-            }
+            SettingsWindow settingsWindow = new SettingsWindow(processCheckFlag, controller.connected);
+            settingsWindow.ShowDialog();
+
+            soundCuesBeep = Properties.Settings.Default.soundCuesBeep;
+            soundCuesTTS = Properties.Settings.Default.soundCuesTTS;
+
+            if (Properties.Settings.Default.controllerSupport && !controllerWorker.IsBusy && controller.connected)
+                controllerWorker.RunWorkerAsync();
+            else
+                controllerWorker.CancelAsync();
         }
     }
 }
