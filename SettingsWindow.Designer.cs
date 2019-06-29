@@ -31,18 +31,19 @@
             this.labelSettingsTitle = new System.Windows.Forms.Label();
             this.groupBoxKeyBinds = new System.Windows.Forms.GroupBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.checkBoxStartup = new System.Windows.Forms.CheckBox();
+            this.checkBoxController = new System.Windows.Forms.CheckBox();
+            this.labelAudioCues = new System.Windows.Forms.Label();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonClose = new System.Windows.Forms.Button();
             this.groupBoxStatus = new System.Windows.Forms.GroupBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.labelAudioCues = new System.Windows.Forms.Label();
-            this.checkBoxController = new System.Windows.Forms.CheckBox();
-            this.checkBoxStartup = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.buttonRetryControllerConnection = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
+            this.labelStatusAdmin = new System.Windows.Forms.Label();
+            this.labelStatusProcess = new System.Windows.Forms.Label();
+            this.labelStatusController = new System.Windows.Forms.Label();
+            this.labelComingSoon = new System.Windows.Forms.Label();
+            this.groupBoxKeyBinds.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBoxStatus.SuspendLayout();
             this.SuspendLayout();
@@ -59,6 +60,7 @@
             // 
             // groupBoxKeyBinds
             // 
+            this.groupBoxKeyBinds.Controls.Add(this.labelComingSoon);
             this.groupBoxKeyBinds.Location = new System.Drawing.Point(12, 12);
             this.groupBoxKeyBinds.Name = "groupBoxKeyBinds";
             this.groupBoxKeyBinds.Size = new System.Drawing.Size(552, 121);
@@ -68,7 +70,6 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.buttonRetryControllerConnection);
             this.groupBox1.Controls.Add(this.checkBox3);
             this.groupBox1.Controls.Add(this.checkBoxStartup);
             this.groupBox1.Controls.Add(this.checkBoxController);
@@ -80,6 +81,57 @@
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Other Settings";
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Location = new System.Drawing.Point(280, 92);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(266, 24);
+            this.checkBox3.TabIndex = 4;
+            this.checkBox3.Text = "Automatically Check for Updates";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxStartup
+            // 
+            this.checkBoxStartup.AutoSize = true;
+            this.checkBoxStartup.Location = new System.Drawing.Point(280, 62);
+            this.checkBoxStartup.Name = "checkBoxStartup";
+            this.checkBoxStartup.Size = new System.Drawing.Size(170, 24);
+            this.checkBoxStartup.TabIndex = 3;
+            this.checkBoxStartup.Text = "Start with Windows";
+            this.checkBoxStartup.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxController
+            // 
+            this.checkBoxController.AutoSize = true;
+            this.checkBoxController.Location = new System.Drawing.Point(280, 32);
+            this.checkBoxController.Name = "checkBoxController";
+            this.checkBoxController.Size = new System.Drawing.Size(218, 24);
+            this.checkBoxController.TabIndex = 2;
+            this.checkBoxController.Text = "Enable Controller Support";
+            this.checkBoxController.UseVisualStyleBackColor = true;
+            // 
+            // labelAudioCues
+            // 
+            this.labelAudioCues.AutoSize = true;
+            this.labelAudioCues.Location = new System.Drawing.Point(6, 33);
+            this.labelAudioCues.Name = "labelAudioCues";
+            this.labelAudioCues.Size = new System.Drawing.Size(91, 20);
+            this.labelAudioCues.TabIndex = 1;
+            this.labelAudioCues.Text = "Audio Cues";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "Disabled",
+            "Beeps",
+            "Text-to-speech"});
+            this.comboBox1.Location = new System.Drawing.Point(103, 30);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(157, 28);
+            this.comboBox1.TabIndex = 0;
             // 
             // buttonSave
             // 
@@ -103,9 +155,9 @@
             // 
             // groupBoxStatus
             // 
-            this.groupBoxStatus.Controls.Add(this.label3);
-            this.groupBoxStatus.Controls.Add(this.label2);
-            this.groupBoxStatus.Controls.Add(this.label1);
+            this.groupBoxStatus.Controls.Add(this.labelStatusAdmin);
+            this.groupBoxStatus.Controls.Add(this.labelStatusProcess);
+            this.groupBoxStatus.Controls.Add(this.labelStatusController);
             this.groupBoxStatus.Location = new System.Drawing.Point(570, 139);
             this.groupBoxStatus.Name = "groupBoxStatus";
             this.groupBoxStatus.Size = new System.Drawing.Size(214, 133);
@@ -113,92 +165,41 @@
             this.groupBoxStatus.TabStop = false;
             this.groupBoxStatus.Text = "Status";
             // 
-            // comboBox1
+            // labelStatusAdmin
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "Disabled",
-            "Beeps",
-            "Text-to-speech"});
-            this.comboBox1.Location = new System.Drawing.Point(103, 30);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(157, 28);
-            this.comboBox1.TabIndex = 0;
+            this.labelStatusAdmin.AutoSize = true;
+            this.labelStatusAdmin.Location = new System.Drawing.Point(10, 80);
+            this.labelStatusAdmin.Name = "labelStatusAdmin";
+            this.labelStatusAdmin.Size = new System.Drawing.Size(147, 20);
+            this.labelStatusAdmin.TabIndex = 2;
+            this.labelStatusAdmin.Text = "Running as Admin: ";
             // 
-            // labelAudioCues
+            // labelStatusProcess
             // 
-            this.labelAudioCues.AutoSize = true;
-            this.labelAudioCues.Location = new System.Drawing.Point(6, 33);
-            this.labelAudioCues.Name = "labelAudioCues";
-            this.labelAudioCues.Size = new System.Drawing.Size(91, 20);
-            this.labelAudioCues.TabIndex = 1;
-            this.labelAudioCues.Text = "Audio Cues";
+            this.labelStatusProcess.AutoSize = true;
+            this.labelStatusProcess.Location = new System.Drawing.Point(10, 30);
+            this.labelStatusProcess.Name = "labelStatusProcess";
+            this.labelStatusProcess.Size = new System.Drawing.Size(111, 20);
+            this.labelStatusProcess.TabIndex = 1;
+            this.labelStatusProcess.Text = "GTA Process: ";
             // 
-            // checkBoxController
+            // labelStatusController
             // 
-            this.checkBoxController.AutoSize = true;
-            this.checkBoxController.Location = new System.Drawing.Point(280, 32);
-            this.checkBoxController.Name = "checkBoxController";
-            this.checkBoxController.Size = new System.Drawing.Size(218, 24);
-            this.checkBoxController.TabIndex = 2;
-            this.checkBoxController.Text = "Enable Controller Support";
-            this.checkBoxController.UseVisualStyleBackColor = true;
+            this.labelStatusController.AutoSize = true;
+            this.labelStatusController.Location = new System.Drawing.Point(10, 55);
+            this.labelStatusController.Name = "labelStatusController";
+            this.labelStatusController.Size = new System.Drawing.Size(85, 20);
+            this.labelStatusController.TabIndex = 0;
+            this.labelStatusController.Text = "Controller: ";
             // 
-            // checkBoxStartup
+            // labelComingSoon
             // 
-            this.checkBoxStartup.AutoSize = true;
-            this.checkBoxStartup.Location = new System.Drawing.Point(280, 62);
-            this.checkBoxStartup.Name = "checkBoxStartup";
-            this.checkBoxStartup.Size = new System.Drawing.Size(170, 24);
-            this.checkBoxStartup.TabIndex = 3;
-            this.checkBoxStartup.Text = "Start with Windows";
-            this.checkBoxStartup.UseVisualStyleBackColor = true;
-            // 
-            // checkBox3
-            // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(280, 92);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(266, 24);
-            this.checkBox3.TabIndex = 4;
-            this.checkBox3.Text = "Automatically Check for Updates";
-            this.checkBox3.UseVisualStyleBackColor = true;
-            // 
-            // buttonRetryControllerConnection
-            // 
-            this.buttonRetryControllerConnection.Location = new System.Drawing.Point(10, 74);
-            this.buttonRetryControllerConnection.Name = "buttonRetryControllerConnection";
-            this.buttonRetryControllerConnection.Size = new System.Drawing.Size(250, 32);
-            this.buttonRetryControllerConnection.TabIndex = 5;
-            this.buttonRetryControllerConnection.Text = "Retry Controller Connection";
-            this.buttonRetryControllerConnection.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 55);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(85, 20);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Controller: ";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 30);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(111, 20);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "GTA Process: ";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(10, 80);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(147, 20);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Running as Admin: ";
+            this.labelComingSoon.AutoSize = true;
+            this.labelComingSoon.Location = new System.Drawing.Point(209, 56);
+            this.labelComingSoon.Name = "labelComingSoon";
+            this.labelComingSoon.Size = new System.Drawing.Size(106, 20);
+            this.labelComingSoon.TabIndex = 0;
+            this.labelComingSoon.Text = "Coming soon!";
             // 
             // SettingsWindow
             // 
@@ -212,9 +213,13 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBoxKeyBinds);
             this.Controls.Add(this.labelSettingsTitle);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "SettingsWindow";
             this.ShowInTaskbar = false;
             this.Text = "Settings";
+            this.groupBoxKeyBinds.ResumeLayout(false);
+            this.groupBoxKeyBinds.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBoxStatus.ResumeLayout(false);
@@ -237,9 +242,9 @@
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.CheckBox checkBoxStartup;
         private System.Windows.Forms.CheckBox checkBoxController;
-        private System.Windows.Forms.Button buttonRetryControllerConnection;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelStatusAdmin;
+        private System.Windows.Forms.Label labelStatusProcess;
+        private System.Windows.Forms.Label labelStatusController;
+        private System.Windows.Forms.Label labelComingSoon;
     }
 }
