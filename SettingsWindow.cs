@@ -1,15 +1,34 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Principal;
 using System.Windows.Forms;
 
 namespace GTAPanicButton
 {
     public partial class SettingsWindow : Form
     {
-        public SettingsWindow()
+
+        public SettingsWindow(bool gtaProcessDetected, bool controllerConnected)
         {
             InitializeComponent();
+
             checkBoxStartup.Checked = MainWindow.startupRegKey.GetValueNames().Contains("GTA Panic Button") ? true : false;
+
+            if (gtaProcessDetected)
+                labelStatusProcess.Text += "Detected";
+            else
+                labelStatusProcess.Text += "Unknown"; // check bypassed
+
+            if (controllerConnected)
+                labelStatusController.Text += "Connected";
+            else
+                labelStatusController.Text += "Disconnected";
+
+            if (IsAdministrator())
+                labelStatusAdmin.Text += "Yes";
+            else
+                labelStatusAdmin.Text += "No";
+
         }
 
         private void ButtonClose_Click(object sender, EventArgs e)
@@ -55,6 +74,12 @@ namespace GTAPanicButton
 
             Properties.Settings.Default.Save();
             this.Close();
+        }
+
+        public static bool IsAdministrator()
+        {
+            return (new WindowsPrincipal(WindowsIdentity.GetCurrent()))
+                      .IsInRole(WindowsBuiltInRole.Administrator);
         }
     }
 }
