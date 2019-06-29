@@ -179,6 +179,8 @@ namespace GTAPanicButton
             ProcessHandler.KillGTASocialClubProcess();
             if (soundCuesTTS)
                 soundHandler.speech.SpeakAsync("GTA processes destroyed.");
+            else if (soundCuesBeep)
+                soundHandler.PlayBeep(true);
             Thread.Sleep(5000); // stops it from triggering again
         }
 
