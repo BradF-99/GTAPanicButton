@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="soundCuesBeep" Roaming="true" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="soundCuesTTS" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
