@@ -14,7 +14,7 @@ This isn't a cheat / hack / menu etc. as it never injects itself in to the game 
 
 ## Things you need
 
-* **[.NET Framework 4.0](https://dotnet.microsoft.com/download/dotnet-framework/net40)** (preferably the latest version of the framework)
+* **[.NET Framework 4.5](https://dotnet.microsoft.com/download/dotnet-framework/net40)** (preferably the latest version of the framework)
 * A copy of the game might help also.
 
 ## Troubleshooting
@@ -32,6 +32,9 @@ Make sure you have downloaded the latest version of the .NET Framework [which yo
 * *My anti-virus suite says this program is a virus / malware / trojan etc!*  
 Any builds from this Github releases are confirmed virus-free. You can see this with the VirusTotal scans I add to every release. Your anti-virus suite is probably flagging it as it doesn't have a code signature. No need to worry. Just whitelist it and move on. If you are still worried, the code is right here - see for yourself.
 
+* *My controller isn't detected by the program!*  
+Make sure your controller is connected before the program is started. At this stage, the program does not continously scan for a controller, it only checks if a controller is connected during initialisation. Make sure your controller is XInput compatible, and make sure it works in-game before opening an issue. Xbox 360 / Xbox One variant controllers should work fine, and Dualshock 4 should work fine using DS4Windows - I wrote and debugged the controller code using this setup.
+
 If your problem isn't on this list, or if the solution listed doesn't work, please open a GitHub issue.
 
 ## Lovely people who helped make this possible
@@ -46,8 +49,12 @@ Thank you to the following people!
 
 ## Features that I might implement or might not
 
-* *Controller Support* - press the panic button with your Xbox, PlayStation or Mattel Power Glove controller!
+See [this project](https://github.com/BradF-99/GTAPanicButton/projects/1) for stuff I'm working on.  
+
+Here are some other things I might work on:  
 * *A nicer interface* - I don't know how to improve on perfection but I can certainly try!
+* *Settings Window* - keeps all settings in one centralised location!
+* *Changeable key shortcuts* - pick your own button combos!
 * *Apple HomeKit / Amazon Alexa / Google Home Integration* (not really)
 
 ## Contributing

@@ -37,9 +37,11 @@
             this.btnCredits = new System.Windows.Forms.Button();
             this.checkboxBeep = new System.Windows.Forms.CheckBox();
             this.progressBarTimer = new System.Windows.Forms.ProgressBar();
-            this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.processSuspendWorker = new System.ComponentModel.BackgroundWorker();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.checkBoxStartup = new System.Windows.Forms.CheckBox();
+            this.controllerWorker = new System.ComponentModel.BackgroundWorker();
+            this.processDestroyWorker = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // labelMain
@@ -117,12 +119,12 @@
             // 
             this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.notifyIcon.BalloonTipText = "The GTA Panic Button has minimised to your task bar. Click on the icon in the tas" +
-    "k bar to maximise it again. To close, click this icon and close the program.";
-            this.notifyIcon.BalloonTipTitle = "GTA Panic Button";
+    "k bar to maximise it again.";
+            this.notifyIcon.BalloonTipTitle = "I\'m down here!";
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "GTA Panic Button";
             this.notifyIcon.Visible = true;
-            this.notifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseClick);
+            this.notifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.NotifyIcon_MouseClick);
             // 
             // checkBoxStartup
             // 
@@ -169,9 +171,11 @@
         private System.Windows.Forms.Button btnCredits;
         private System.Windows.Forms.CheckBox checkboxBeep;
         private System.Windows.Forms.ProgressBar progressBarTimer;
-        private System.ComponentModel.BackgroundWorker backgroundWorker;
+        private System.ComponentModel.BackgroundWorker processSuspendWorker;
         private System.Windows.Forms.NotifyIcon notifyIcon;
         private System.Windows.Forms.CheckBox checkBoxStartup;
+        private System.ComponentModel.BackgroundWorker controllerWorker;
+        private System.ComponentModel.BackgroundWorker processDestroyWorker;
     }
 }
 
