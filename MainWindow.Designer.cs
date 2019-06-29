@@ -35,13 +35,12 @@
             this.labelWarn = new System.Windows.Forms.Label();
             this.labelDesc2 = new System.Windows.Forms.Label();
             this.btnCredits = new System.Windows.Forms.Button();
-            this.checkboxBeep = new System.Windows.Forms.CheckBox();
             this.progressBarTimer = new System.Windows.Forms.ProgressBar();
             this.processSuspendWorker = new System.ComponentModel.BackgroundWorker();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.checkBoxStartup = new System.Windows.Forms.CheckBox();
             this.controllerWorker = new System.ComponentModel.BackgroundWorker();
             this.processDestroyWorker = new System.ComponentModel.BackgroundWorker();
+            this.buttonOptions = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // labelMain
@@ -89,24 +88,13 @@
             // 
             // btnCredits
             // 
-            this.btnCredits.Location = new System.Drawing.Point(591, 254);
+            this.btnCredits.Location = new System.Drawing.Point(576, 256);
             this.btnCredits.Name = "btnCredits";
-            this.btnCredits.Size = new System.Drawing.Size(75, 35);
+            this.btnCredits.Size = new System.Drawing.Size(90, 35);
             this.btnCredits.TabIndex = 4;
             this.btnCredits.Text = "About";
             this.btnCredits.UseVisualStyleBackColor = true;
             this.btnCredits.Click += new System.EventHandler(this.BtnCredits_Click);
-            // 
-            // checkboxBeep
-            // 
-            this.checkboxBeep.AutoSize = true;
-            this.checkboxBeep.Location = new System.Drawing.Point(12, 260);
-            this.checkboxBeep.Name = "checkboxBeep";
-            this.checkboxBeep.Size = new System.Drawing.Size(160, 24);
-            this.checkboxBeep.TabIndex = 5;
-            this.checkboxBeep.Text = "Audio Cues (TTS)";
-            this.checkboxBeep.UseVisualStyleBackColor = true;
-            this.checkboxBeep.CheckedChanged += new System.EventHandler(this.CheckboxBeep_CheckedChanged);
             // 
             // progressBarTimer
             // 
@@ -126,25 +114,23 @@
             this.notifyIcon.Visible = true;
             this.notifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.NotifyIcon_MouseClick);
             // 
-            // checkBoxStartup
+            // buttonOptions
             // 
-            this.checkBoxStartup.AutoSize = true;
-            this.checkBoxStartup.Location = new System.Drawing.Point(178, 260);
-            this.checkBoxStartup.Name = "checkBoxStartup";
-            this.checkBoxStartup.Size = new System.Drawing.Size(170, 24);
-            this.checkBoxStartup.TabIndex = 7;
-            this.checkBoxStartup.Text = "Start with Windows";
-            this.checkBoxStartup.UseVisualStyleBackColor = true;
-            this.checkBoxStartup.CheckedChanged += new System.EventHandler(this.CheckBoxStartup_CheckedChanged);
+            this.buttonOptions.Location = new System.Drawing.Point(12, 256);
+            this.buttonOptions.Name = "buttonOptions";
+            this.buttonOptions.Size = new System.Drawing.Size(90, 35);
+            this.buttonOptions.TabIndex = 7;
+            this.buttonOptions.Text = "Options";
+            this.buttonOptions.UseVisualStyleBackColor = true;
+            this.buttonOptions.Click += new System.EventHandler(this.ButtonOptions_Click);
             // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(678, 299);
-            this.Controls.Add(this.checkBoxStartup);
+            this.Controls.Add(this.buttonOptions);
             this.Controls.Add(this.progressBarTimer);
-            this.Controls.Add(this.checkboxBeep);
             this.Controls.Add(this.btnCredits);
             this.Controls.Add(this.labelDesc2);
             this.Controls.Add(this.labelWarn);
@@ -158,7 +144,6 @@
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainWindow_FormClosed);
             this.Resize += new System.EventHandler(this.MainWindow_Resize);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -169,13 +154,12 @@
         private System.Windows.Forms.Label labelWarn;
         private System.Windows.Forms.Label labelDesc2;
         private System.Windows.Forms.Button btnCredits;
-        private System.Windows.Forms.CheckBox checkboxBeep;
         private System.Windows.Forms.ProgressBar progressBarTimer;
         private System.ComponentModel.BackgroundWorker processSuspendWorker;
         private System.Windows.Forms.NotifyIcon notifyIcon;
-        private System.Windows.Forms.CheckBox checkBoxStartup;
         private System.ComponentModel.BackgroundWorker controllerWorker;
         private System.ComponentModel.BackgroundWorker processDestroyWorker;
+        private System.Windows.Forms.Button buttonOptions;
     }
 }
 
