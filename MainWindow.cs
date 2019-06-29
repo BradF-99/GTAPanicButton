@@ -294,7 +294,7 @@ namespace GTAPanicButton
 
         private void ButtonOptions_Click(object sender, EventArgs e)
         {
-            SettingsWindow settingsWindow = new SettingsWindow();
+            SettingsWindow settingsWindow = new SettingsWindow(processCheckFlag, controller.connected);
             settingsWindow.ShowDialog();
         }
     }
