@@ -28,15 +28,12 @@ namespace GTAPanicButton
         public static void SuspendProcess()
         {
             Process gtaProcess = Process.GetProcessesByName("GTA5")[0]; // there's probably only going to be one instance
-
             foreach (ProcessThread thread in gtaProcess.Threads)
             {
                 IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)thread.Id);
 
                 if (pOpenThread == IntPtr.Zero)
-                {
                     continue;
-                }
 
                 SuspendThread(pOpenThread);
                 CloseHandle(pOpenThread);
@@ -46,15 +43,12 @@ namespace GTAPanicButton
         public static void ResumeProcess()
         {
             Process gtaProcess = Process.GetProcessesByName("GTA5")[0];
-
             foreach (ProcessThread thread in gtaProcess.Threads)
             {
                 IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)thread.Id);
 
                 if (pOpenThread == IntPtr.Zero)
-                {
                     continue;
-                }
 
                 var suspendCount = 0;
                 do
@@ -99,10 +93,6 @@ namespace GTAPanicButton
                     MessageBox.Show("A process could not be found. You can " +
                                     "probably ignore this error.", "Warning",
                                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-                else if (e is Win32Exception)
-                {
-                    // fail silently, only seems to happen with controller input
                 }
                 else
                 {
