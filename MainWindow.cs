@@ -296,6 +296,9 @@ namespace GTAPanicButton
         {
             SettingsWindow settingsWindow = new SettingsWindow(processCheckFlag, controller.connected);
             settingsWindow.ShowDialog();
+
+            soundCuesBeep = Properties.Settings.Default.soundCuesBeep;
+            soundCuesTTS = Properties.Settings.Default.soundCuesTTS;
         }
     }
 }
