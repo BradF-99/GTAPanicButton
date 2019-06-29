@@ -29,6 +29,13 @@ namespace GTAPanicButton
             else
                 labelStatusAdmin.Text += "No";
 
+            
+            if(Properties.Settings.Default.soundCuesBeep)
+                comboBoxAudioCues.SelectedIndex = 1;
+            else if (Properties.Settings.Default.soundCuesTTS)
+                comboBoxAudioCues.SelectedIndex = 2;
+            else
+                comboBoxAudioCues.SelectedIndex = 0;
         }
 
         private void ButtonClose_Click(object sender, EventArgs e)
@@ -42,7 +49,7 @@ namespace GTAPanicButton
             {
                 if (checkBoxStartup.Checked)
                     MainWindow.startupRegKey.SetValue("GTA Panic Button", "\"" + Application.ExecutablePath + "\" /nocheck /hide");
-                else
+                else if(!checkBoxStartup.Checked && MainWindow.startupRegKey.GetValueNames().Contains("GTA Panic Button"))
                     MainWindow.startupRegKey.DeleteValue("GTA Panic Button", true);
             }
             catch (Exception ex)
@@ -70,6 +77,22 @@ namespace GTAPanicButton
                                 MessageBoxIcon.Error);
                     return;
                 }
+            }
+
+            if (comboBoxAudioCues.SelectedIndex == 0)
+            {
+                Properties.Settings.Default.soundCuesBeep = false;
+                Properties.Settings.Default.soundCuesTTS = false;
+            }
+            else if (comboBoxAudioCues.SelectedIndex == 1)
+            {
+                Properties.Settings.Default.soundCuesBeep = true;
+                Properties.Settings.Default.soundCuesTTS = false;
+            }
+            else if (comboBoxAudioCues.SelectedIndex == 2)
+            {
+                Properties.Settings.Default.soundCuesBeep = false;
+                Properties.Settings.Default.soundCuesTTS = true;
             }
 
             Properties.Settings.Default.Save();

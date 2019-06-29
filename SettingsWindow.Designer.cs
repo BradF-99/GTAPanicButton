@@ -35,7 +35,7 @@
             this.checkBoxStartup = new System.Windows.Forms.CheckBox();
             this.checkBoxController = new System.Windows.Forms.CheckBox();
             this.labelAudioCues = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.comboBoxAudioCues = new System.Windows.Forms.ComboBox();
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonClose = new System.Windows.Forms.Button();
             this.groupBoxStatus = new System.Windows.Forms.GroupBox();
@@ -43,6 +43,7 @@
             this.labelStatusProcess = new System.Windows.Forms.Label();
             this.labelStatusController = new System.Windows.Forms.Label();
             this.labelComingSoon = new System.Windows.Forms.Label();
+            this.buttonRetryController = new System.Windows.Forms.Button();
             this.groupBoxKeyBinds.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBoxStatus.SuspendLayout();
@@ -70,11 +71,12 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.buttonRetryController);
             this.groupBox1.Controls.Add(this.checkBox3);
             this.groupBox1.Controls.Add(this.checkBoxStartup);
             this.groupBox1.Controls.Add(this.checkBoxController);
             this.groupBox1.Controls.Add(this.labelAudioCues);
-            this.groupBox1.Controls.Add(this.comboBox1);
+            this.groupBox1.Controls.Add(this.comboBoxAudioCues);
             this.groupBox1.Location = new System.Drawing.Point(12, 139);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(552, 130);
@@ -115,23 +117,24 @@
             // labelAudioCues
             // 
             this.labelAudioCues.AutoSize = true;
-            this.labelAudioCues.Location = new System.Drawing.Point(6, 33);
+            this.labelAudioCues.Location = new System.Drawing.Point(6, 35);
             this.labelAudioCues.Name = "labelAudioCues";
             this.labelAudioCues.Size = new System.Drawing.Size(91, 20);
             this.labelAudioCues.TabIndex = 1;
             this.labelAudioCues.Text = "Audio Cues";
             // 
-            // comboBox1
+            // comboBoxAudioCues
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
+            this.comboBoxAudioCues.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxAudioCues.FormattingEnabled = true;
+            this.comboBoxAudioCues.Items.AddRange(new object[] {
             "Disabled",
             "Beeps",
             "Text-to-speech"});
-            this.comboBox1.Location = new System.Drawing.Point(103, 30);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(157, 28);
-            this.comboBox1.TabIndex = 0;
+            this.comboBoxAudioCues.Location = new System.Drawing.Point(103, 30);
+            this.comboBoxAudioCues.Name = "comboBoxAudioCues";
+            this.comboBoxAudioCues.Size = new System.Drawing.Size(157, 28);
+            this.comboBoxAudioCues.TabIndex = 0;
             // 
             // buttonSave
             // 
@@ -201,6 +204,15 @@
             this.labelComingSoon.TabIndex = 0;
             this.labelComingSoon.Text = "Coming soon!";
             // 
+            // buttonRetryController
+            // 
+            this.buttonRetryController.Location = new System.Drawing.Point(10, 72);
+            this.buttonRetryController.Name = "buttonRetryController";
+            this.buttonRetryController.Size = new System.Drawing.Size(250, 36);
+            this.buttonRetryController.TabIndex = 5;
+            this.buttonRetryController.Text = "Retry Controller Connection";
+            this.buttonRetryController.UseVisualStyleBackColor = true;
+            // 
             // SettingsWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -237,7 +249,7 @@
         private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.Button buttonClose;
         private System.Windows.Forms.GroupBox groupBoxStatus;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox comboBoxAudioCues;
         private System.Windows.Forms.Label labelAudioCues;
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.CheckBox checkBoxStartup;
@@ -246,5 +258,6 @@
         private System.Windows.Forms.Label labelStatusProcess;
         private System.Windows.Forms.Label labelStatusController;
         private System.Windows.Forms.Label labelComingSoon;
+        private System.Windows.Forms.Button buttonRetryController;
     }
 }
