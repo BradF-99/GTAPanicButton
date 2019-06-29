@@ -1,6 +1,6 @@
 # GTAPanicButton
 
-![A screenshot of the program.](https://repository-images.githubusercontent.com/192721589/1cd26e00-984c-11e9-8191-5364e34804e1)
+![A screenshot of the program.](https://repository-images.githubusercontent.com/192721589/8194ff00-9abe-11e9-9f4b-4a26b351285e)
 
 [**Watch a video of the program in action here!**](https://youtu.be/Q3I0QNe0F00)
 
@@ -8,7 +8,7 @@ This program allows you to put yourself in your own GTA:O online lobby by suspen
 
 You can also close the game and all of its processes immediately, in case you take a **massive L** and don't want to save your progress, for example - if you are trying to complete a heist without dying or something.
 
-The key shortcuts work in game (tested in windowed and fullscreen mode with Windows 10).
+The key annd controller shortcuts work in game (tested in windowed and fullscreen mode with Windows 10).
 
 This isn't a cheat / hack / menu etc. as it never injects itself in to the game nor does it modify the game in any way. It simply tells the computer to suspend the threads and then resume them. This program **does not** affect any other players as it only drops you from the session. 
 
@@ -33,7 +33,8 @@ Make sure you have downloaded the latest version of the .NET Framework [which yo
 Any builds from this Github releases are confirmed virus-free. You can see this with the VirusTotal scans I add to every release. Your anti-virus suite is probably flagging it as it doesn't have a code signature. No need to worry. Just whitelist it and move on. If you are still worried, the code is right here - see for yourself.
 
 * *My controller isn't detected by the program!*  
-Make sure your controller is connected before the program is started. At this stage, the program does not continously scan for a controller, it only checks if a controller is connected during initialisation. Make sure your controller is XInput compatible, and make sure it works in-game before opening an issue. Xbox 360 / Xbox One variant controllers should work fine, and Dualshock 4 should work fine using DS4Windows - I wrote and debugged the controller code using this setup.
+Check the status in the Settings menu. If the status shows your controller is not connected, try restarting the program. Also, try unticking the controller support box, saving the settings, then rechecking it and saving again. This makes the program recheck for your controller.
+Make sure your controller is XInput compatible, and make sure it works in-game before opening an issue. Xbox 360 / Xbox One variant controllers should work fine, and Dualshock 4 should work fine using DS4Windows - I wrote and debugged the controller code using this setup.
 
 If your problem isn't on this list, or if the solution listed doesn't work, please open a GitHub issue.
 
@@ -49,11 +50,10 @@ Thank you to the following people!
 
 ## Features that I might implement or might not
 
-See [this project](https://github.com/BradF-99/GTAPanicButton/projects/1) for stuff I'm working on.  
+See [this kanban board](https://github.com/BradF-99/GTAPanicButton/projects/1) for stuff I'm working on.  
 
 Here are some other things I might work on:  
 * *A nicer interface* - I don't know how to improve on perfection but I can certainly try!
-* *Settings Window* - keeps all settings in one centralised location!
 * *Changeable key shortcuts* - pick your own button combos!
 * *Apple HomeKit / Amazon Alexa / Google Home Integration* (not really)
 
