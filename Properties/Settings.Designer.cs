@@ -47,5 +47,17 @@ namespace GTAPanicButton.Properties {
                 this["soundCuesTTS"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool controllerSupport {
+            get {
+                return ((bool)(this["controllerSupport"]));
+            }
+            set {
+                this["controllerSupport"] = value;
+            }
+        }
     }
 }
