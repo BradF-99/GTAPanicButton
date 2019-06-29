@@ -300,7 +300,7 @@ namespace GTAPanicButton
             soundCuesBeep = Properties.Settings.Default.soundCuesBeep;
             soundCuesTTS = Properties.Settings.Default.soundCuesTTS;
 
-            if (Properties.Settings.Default.controllerSupport && !controllerWorker.IsBusy)
+            if (Properties.Settings.Default.controllerSupport && !controllerWorker.IsBusy && controller.connected)
                 controllerWorker.RunWorkerAsync();
             else
                 controllerWorker.CancelAsync();
