@@ -115,6 +115,7 @@ namespace GTAPanicButton
             controllerWorker.RunWorkerCompleted +=
                 new RunWorkerCompletedEventHandler(ControllerWorker_RunWorkerCompleted);
             controllerWorker.WorkerReportsProgress = true;
+            controllerWorker.WorkerSupportsCancellation = true;
 
             if (controller.connected)
                 controllerWorker.RunWorkerAsync();
@@ -207,9 +208,20 @@ namespace GTAPanicButton
         {
             if (controller.connected)
             {
-                controllerStatus = controller.Update();
+                try
+                {
+                    controllerStatus = controller.Update();
+                }
+                catch (SharpDX.SharpDXException)
+                {
+                    // fail silently, just means the controller was disconnected during poll
+                }
             }
-            Thread.Sleep(100);
+            else
+            {
+                controllerWorker.CancelAsync();
+            }
+            Thread.Sleep(100); // precision not required so no point polling at 100mhz
         }
 
         private void ControllerWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -239,7 +251,11 @@ namespace GTAPanicButton
                     }
                     controllerWorker.RunWorkerAsync();
                 }
-            } 
+            }
+            else
+            {
+                controllerWorker.CancelAsync();
+            }
         }
 
         private void BtnCredits_Click(object sender, EventArgs e)
