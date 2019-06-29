@@ -61,7 +61,7 @@
             this.labelDesc1.Name = "labelDesc1";
             this.labelDesc1.Size = new System.Drawing.Size(677, 26);
             this.labelDesc1.TabIndex = 1;
-            this.labelDesc1.Text = "Press Ctrl + Shift + F11 to kill the GTA and Social Club processes.";
+            this.labelDesc1.Text = "Press Ctrl + Shift + F11 (or L2 + R2 + L3) to close the game.";
             this.labelDesc1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // labelWarn
@@ -83,7 +83,7 @@
             this.labelDesc2.Name = "labelDesc2";
             this.labelDesc2.Size = new System.Drawing.Size(677, 26);
             this.labelDesc2.TabIndex = 3;
-            this.labelDesc2.Text = "Press Ctrl + Shift + F12 to suspend GTA for 10 seconds.";
+            this.labelDesc2.Text = "Press Ctrl + Shift + F12 (or L2 + R2 + R3) to suspend GTA.";
             this.labelDesc2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // btnCredits
