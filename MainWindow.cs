@@ -16,12 +16,11 @@ namespace GTAPanicButton
         private bool balloonStatus = false; // set to false when balloon is shown (initialised true during window creation for hide arg)
         private readonly bool processCheckFlag = true; // set to false if nocheck arg is passed
        
-
         public static readonly RegistryKey startupRegKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
         private readonly ControllerHandler controller = new ControllerHandler();
         private IDictionary<string, bool> controllerStatus;
 
-        private SoundHandler soundHandler = new SoundHandler();
+        private readonly SoundHandler soundHandler = new SoundHandler();
 
         public MainWindow(string[] args)
         {
@@ -44,6 +43,8 @@ namespace GTAPanicButton
                             this.Hide();
                             this.Visible = false; // for some reason Hide() doesn't always work
                             this.ShowInTaskbar = false;
+                            break;
+                        default:
                             break;
                     }
                 }
