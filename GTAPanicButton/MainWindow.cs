@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
-using System.Threading;
-using System.ComponentModel;
+﻿using GTAPanicButton.GTAPanicButton.Handlers;
 using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace GTAPanicButton
 {
@@ -11,11 +12,10 @@ namespace GTAPanicButton
     {
         private const int hotkeyNum = 0x0312; // WM_HOTKEY
 
-        private bool soundCuesBeep = Properties.Settings.Default.soundCuesBeep;  
+        private bool soundCuesBeep = Properties.Settings.Default.soundCuesBeep;
         private bool soundCuesTTS = Properties.Settings.Default.soundCuesTTS;
         private bool balloonStatus = false; // set to false when balloon is shown (initialised true during window creation for hide arg)
-        private readonly bool processCheckFlag = true; // set to false if nocheck arg is passed
-       
+
         public static readonly RegistryKey startupRegKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
         private readonly ControllerHandler controller = new ControllerHandler();
         private IDictionary<string, bool> controllerStatus;
@@ -28,15 +28,12 @@ namespace GTAPanicButton
             notifyIcon.Visible = false;
 
             // check if GTA process is running
-            if(args.Length > 0) // high iq arg handler
+            if (args.Length > 0) // high iq arg handler
             {
-                foreach(string arg in args)
+                foreach (string arg in args)
                 {
                     switch (arg)
                     {
-                        case "/nocheck": // don't perform check for process 
-                            processCheckFlag = false;
-                            break;
                         case "/hide": // start in systray
                             notifyIcon.Visible = true;
                             this.WindowState = FormWindowState.Minimized;
@@ -44,20 +41,17 @@ namespace GTAPanicButton
                             this.Visible = false; // for some reason Hide() doesn't always work
                             this.ShowInTaskbar = false;
                             break;
+
                         default:
                             break;
                     }
                 }
             }
 
-            if (processCheckFlag)
-                ProcessHandler.CheckProcess();
-
             KeybindHandler.RegisterHotkeys(this);
             InitialiseBackgroundWorkers();
 
             balloonStatus = true;
-            
         }
 
         protected override void WndProc(ref Message m)
@@ -67,15 +61,12 @@ namespace GTAPanicButton
                 if (!processSuspendWorker.IsBusy)
                     processSuspendWorker.RunWorkerAsync();
             }
-            else if (m.Msg == hotkeyNum && m.WParam.ToInt32() == KeybindHandler.hotkeyKill)
-            {
-                if(!processDestroyWorker.IsBusy)
-                    processDestroyWorker.RunWorkerAsync();
-            }
+            else if (m.Msg == hotkeyNum && m.WParam.ToInt32() == KeybindHandler.hotkeyKill && !processDestroyWorker.IsBusy)
+                processDestroyWorker.RunWorkerAsync();
 
             base.WndProc(ref m);
         }
-        
+
         private void InitialiseBackgroundWorkers()
         {
             processSuspendWorker.DoWork +=
@@ -107,13 +98,23 @@ namespace GTAPanicButton
         {
             BackgroundWorker worker = sender as BackgroundWorker;
 
+            if (!ProcessHandler.CheckProcess())
+            {
+                MessageBox.Show("The GTA game process could not be found. " +
+                                "Maybe try relaunching this program as an administrator.",
+                                "Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                return;
+            }
+
             try
             {
                 ProcessHandler.SuspendProcess();
 
                 if (soundCuesTTS)
                     soundHandler.speech.SpeakAsync("GTA suspended, one moment.");
-                  
+
                 for (int i = 0; i < 10; i++)
                 {
                     if (soundCuesBeep)
@@ -164,7 +165,7 @@ namespace GTAPanicButton
         private void ProcessSuspendWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             progressBarTimer.Value = 0;
-            if(e.Error != null)
+            if (e.Error != null)
             {
                 MessageBox.Show("Something went wrong. " +
                             "Please make an issue on the Github " +
@@ -230,19 +231,17 @@ namespace GTAPanicButton
                             MessageBoxIcon.Error);
             }
 
-            if (!controllerWorker.CancellationPending && Properties.Settings.Default.controllerSupport) { 
+            if (!controllerWorker.CancellationPending && Properties.Settings.Default.controllerSupport)
+            {
                 if (!controllerStatus.Equals(null) || !controller.connected)
                 {
                     if (controllerStatus["Suspend"])
                     {
-                        if (processSuspendWorker.IsBusy != true)
+                        if (!processSuspendWorker.IsBusy)
                             processSuspendWorker.RunWorkerAsync();
                     }
-                    else if (controllerStatus["Exit"])
-                    {
-                        if (processDestroyWorker.IsBusy != true)
-                            processDestroyWorker.RunWorkerAsync();
-                    }
+                    else if (controllerStatus["Exit"] && !processDestroyWorker.IsBusy)
+                        processDestroyWorker.RunWorkerAsync();
                     controllerWorker.RunWorkerAsync();
                 }
             }
@@ -254,7 +253,7 @@ namespace GTAPanicButton
 
         private void BtnCredits_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("v1.73 (Build 53) - compiled on 2019/06/29.\n\n" +
+            MessageBox.Show("v1.80 - compiled on 2020/12/28.\n\n" +
                             "Developers: BradF-99 & Assasindie\n" +
                             "Testers: joco & charlco\n" +
                             "Thank you to the testers, as well as " +
@@ -297,7 +296,7 @@ namespace GTAPanicButton
 
         private void ButtonOptions_Click(object sender, EventArgs e)
         {
-            SettingsWindow settingsWindow = new SettingsWindow(processCheckFlag, controller.connected);
+            SettingsWindow settingsWindow = new SettingsWindow(controller.connected);
             settingsWindow.ShowDialog();
 
             soundCuesBeep = Properties.Settings.Default.soundCuesBeep;

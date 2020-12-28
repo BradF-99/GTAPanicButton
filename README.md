@@ -4,7 +4,7 @@
 
 [**Watch a video of the program in action here!**](https://youtu.be/Q3I0QNe0F00)
 
-This program allows you to put yourself in your own GTA:O online lobby by suspending the game process for 10 seconds. This is particularly useful if some *skid hacker* is setting *everyone on fire with their mods* or if you just want some peace and quiet. Your friends will be able to join the session, but other people may join at random due to the match-making algorithm - and of course we can't fix this.
+This program allows you to put yourself in your own GTA:O online lobby by suspending the game process for 10 seconds. This is particularly useful if some *skid hacker* is setting *everyone on fire with their mods* or if you just want some peace and quiet. Your friends will be able to join the session, but other people may join at random due to the match-making algorithm - this program is not designed to fix this problem, although some can.
 
 You can also close the game and all of its processes immediately, in case you take a **massive L** and don't want to save your progress, for example - if you are trying to complete a heist without dying or something.
 
@@ -14,7 +14,7 @@ This isn't a cheat / hack / menu etc. as it never injects itself in to the game 
 
 ## Things you need
 
-* **[.NET Framework 4.5](https://dotnet.microsoft.com/download/dotnet-framework/net40)** (preferably the latest version of the framework)
+* **[.NET Framework 4.8](https://dotnet.microsoft.com/download/dotnet-framework/net40)** (preferably the latest version of the framework)
 * A copy of the game might help also.
 
 ## Troubleshooting
@@ -45,7 +45,7 @@ Thank you to the following people!
 * [@JordanOcokoljic](https://github.com/JordanOcokoljic) - first tester, assisted with cleaning up my 5 minute hack job!
 * [@charlco](https://github.com/charlco) - discovered exceptions that needed to be handled!
 * [@Assasindie](https://github.com/Assasindie) - contributed improvements to exception handling!
-* Starwobble and Llamasassboat - suggested the key shortcut to instantly quit the game!
+* Pongo and Llamasassboat - suggested the key shortcut to instantly quit the game!
 * Magnus Johansson Otiel and henon on StackOverflow - contributed a great amount of the codebase!
 
 ## Features that I might implement or might not

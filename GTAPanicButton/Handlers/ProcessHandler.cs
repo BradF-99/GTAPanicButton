@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace GTAPanicButton
 {
-    class ProcessHandler
+    internal class ProcessHandler
     {
         [Flags]
-        private enum ThreadAccess : int
+        private enum ThreadAccess
         {
             TERMINATE = (0x0001),
             SUSPEND_RESUME = (0x0002)
@@ -17,46 +17,55 @@ namespace GTAPanicButton
 
         [DllImport("kernel32.dll")]
         private static extern IntPtr OpenThread(ThreadAccess dwDesiredAccess, bool bInheritHandle, uint dwThreadId);
+
         [DllImport("kernel32.dll")]
         private static extern uint SuspendThread(IntPtr hThread);
+
         [DllImport("kernel32.dll")]
         private static extern int ResumeThread(IntPtr hThread);
+
         [DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern bool CloseHandle(IntPtr handle);
 
-
         public static void SuspendProcess()
         {
-            Process gtaProcess = Process.GetProcessesByName("GTA5")[0]; // there's probably only going to be one instance
-            foreach (ProcessThread thread in gtaProcess.Threads)
+            Process[] gtaProcesses = Process.GetProcessesByName("GTA5"); // there's probably only going to be one instance
+
+            foreach (Process gtaProcess in gtaProcesses)
             {
-                IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)thread.Id);
+                foreach (ProcessThread thread in gtaProcess.Threads)
+                {
+                    IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)thread.Id);
 
-                if (pOpenThread == IntPtr.Zero)
-                    continue;
+                    if (pOpenThread == IntPtr.Zero)
+                        continue;
 
-                SuspendThread(pOpenThread);
-                CloseHandle(pOpenThread);
+                    SuspendThread(pOpenThread);
+                    CloseHandle(pOpenThread);
+                }
             }
         }
 
         public static void ResumeProcess()
         {
-            Process gtaProcess = Process.GetProcessesByName("GTA5")[0];
-            foreach (ProcessThread thread in gtaProcess.Threads)
+            Process[] gtaProcesses = Process.GetProcessesByName("GTA5");
+            foreach (Process gtaProcess in gtaProcesses)
             {
-                IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)thread.Id);
-
-                if (pOpenThread == IntPtr.Zero)
-                    continue;
-
-                var suspendCount = 0;
-                do
+                foreach (ProcessThread thread in gtaProcess.Threads)
                 {
-                    suspendCount = ResumeThread(pOpenThread);
-                } while (suspendCount > 0);
+                    IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)thread.Id);
 
-                CloseHandle(pOpenThread);
+                    if (pOpenThread == IntPtr.Zero)
+                        continue;
+
+                    var suspendCount = 0;
+                    do
+                    {
+                        suspendCount = ResumeThread(pOpenThread);
+                    } while (suspendCount > 0);
+
+                    CloseHandle(pOpenThread);
+                }
             }
         }
 
@@ -65,8 +74,9 @@ namespace GTAPanicButton
             try
             {
                 KillProcess("GTA5");
-                KillProcess("GTAVLauncher");
+                KillProcess("Launcher");
                 KillProcess("SocialClubHelper");
+                KillProcess("RockstarService");
             }
             catch (Exception e)
             {
@@ -75,7 +85,8 @@ namespace GTAPanicButton
                     MessageBox.Show("A process could not be found. You can " +
                                     "probably ignore this error.", "Warning",
                                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                } else if (e is Win32Exception) //if it cant kill the process (most likely wont happen aswell unless gta is installed somewhere weird.)
+                }
+                else if (e is Win32Exception) //if it cant kill the process (most likely wont happen aswell unless gta is installed somewhere weird.)
                 {
                     MessageBox.Show("Could not terminate the process. " +
                         "Try relaunching in adminstrator mode" +
@@ -84,7 +95,8 @@ namespace GTAPanicButton
                 "message as a screenshot. Exception: " +
                 e.Message, "Error", MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
-                } else
+                }
+                else
                 {
                     MessageBox.Show("Something went wrong. " +
                                     "Please make an issue on the Github " +
@@ -96,29 +108,27 @@ namespace GTAPanicButton
             }
         }
 
-        public static void CheckProcess()
+        public static bool CheckProcess()
         {
             try
             {
-                Process process = Process.GetProcessesByName("GTA5")[0];
+                Process[] process = Process.GetProcessesByName("GTA5");
+                if (process.Length <= 0)
+                    return false;
+                return true;
             }
-            catch (IndexOutOfRangeException)
+            catch
             {
-                MessageBox.Show("The GTA game process could not be found. " +
-                                "Maybe try relaunching this program as an administrator.",
-                                "Error",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
-                Environment.Exit(1);
+                return false;
             }
         }
 
         public static void KillProcess(string ProcessName)
         {
             Process[] processes = Process.GetProcessesByName(ProcessName);
-            if(processes.Length > 0)
+            if (processes.Length > 0)
             {
-                foreach(Process proc in processes)
+                foreach (Process proc in processes)
                 {
                     proc.Kill();
                 }
