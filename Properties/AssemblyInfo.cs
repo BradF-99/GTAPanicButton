@@ -1,6 +1,5 @@
-﻿using System.Resources;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
@@ -9,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("GTA Panic Button")]
 [assembly: AssemblyDescription("Helps you get out of sticky situations in GTA Online!")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("BradF-99")]
+[assembly: AssemblyCompany("BradF")]
 [assembly: AssemblyProduct("GTA Panic Button")]
-[assembly: AssemblyCopyright("Copyright © BradF-99 2019")]
+[assembly: AssemblyCopyright("Copyright © BradF 2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,7 +32,6 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.73.0.0")]
-[assembly: AssemblyFileVersion("1.73.0.0")]
+[assembly: AssemblyVersion("1.81.0.0")]
+[assembly: AssemblyFileVersion("1.81.0.0")]
 [assembly: NeutralResourcesLanguage("en")]
-

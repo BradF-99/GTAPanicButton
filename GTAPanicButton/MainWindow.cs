@@ -253,7 +253,7 @@ namespace GTAPanicButton
 
         private void BtnCredits_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("v1.73 (Build 53) - compiled on 2019/06/29.\n\n" +
+            MessageBox.Show("v1.80 - compiled on 2020/12/28.\n\n" +
                             "Developers: BradF-99 & Assasindie\n" +
                             "Testers: joco & charlco\n" +
                             "Thank you to the testers, as well as " +
