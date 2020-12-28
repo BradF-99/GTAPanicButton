@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using SharpDX.XInput;
+﻿using SharpDX.XInput;
+using System.Collections.Generic;
 
 namespace GTAPanicButton
 {
-    class ControllerHandler
+    internal class ControllerHandler
     {
-        readonly Controller controller;
-        Gamepad gamepad;
+        private readonly Controller controller;
+        private Gamepad gamepad;
         public bool connected = false;
         public float leftTrigger, rightTrigger;
         public IDictionary<string, bool> buttonStatus;
@@ -28,7 +28,7 @@ namespace GTAPanicButton
             connected = controller.IsConnected; // should fix error thrown when controller disconnects
 
             gamepad = controller.GetState().Gamepad;
-            
+
             leftTrigger = gamepad.LeftTrigger;
             rightTrigger = gamepad.RightTrigger;
 

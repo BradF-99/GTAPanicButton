@@ -30,6 +30,7 @@
         {
             this.labelSettingsTitle = new System.Windows.Forms.Label();
             this.groupBoxKeyBinds = new System.Windows.Forms.GroupBox();
+            this.labelComingSoon = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.checkBoxUpdates = new System.Windows.Forms.CheckBox();
             this.checkBoxStartup = new System.Windows.Forms.CheckBox();
@@ -40,9 +41,7 @@
             this.buttonClose = new System.Windows.Forms.Button();
             this.groupBoxStatus = new System.Windows.Forms.GroupBox();
             this.labelStatusAdmin = new System.Windows.Forms.Label();
-            this.labelStatusProcess = new System.Windows.Forms.Label();
             this.labelStatusController = new System.Windows.Forms.Label();
-            this.labelComingSoon = new System.Windows.Forms.Label();
             this.groupBoxKeyBinds.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBoxStatus.SuspendLayout();
@@ -67,6 +66,15 @@
             this.groupBoxKeyBinds.TabIndex = 1;
             this.groupBoxKeyBinds.TabStop = false;
             this.groupBoxKeyBinds.Text = "Key Binds";
+            // 
+            // labelComingSoon
+            // 
+            this.labelComingSoon.AutoSize = true;
+            this.labelComingSoon.Location = new System.Drawing.Point(209, 56);
+            this.labelComingSoon.Name = "labelComingSoon";
+            this.labelComingSoon.Size = new System.Drawing.Size(106, 20);
+            this.labelComingSoon.TabIndex = 0;
+            this.labelComingSoon.Text = "Coming soon!";
             // 
             // groupBox1
             // 
@@ -158,11 +166,10 @@
             // groupBoxStatus
             // 
             this.groupBoxStatus.Controls.Add(this.labelStatusAdmin);
-            this.groupBoxStatus.Controls.Add(this.labelStatusProcess);
             this.groupBoxStatus.Controls.Add(this.labelStatusController);
             this.groupBoxStatus.Location = new System.Drawing.Point(570, 139);
             this.groupBoxStatus.Name = "groupBoxStatus";
-            this.groupBoxStatus.Size = new System.Drawing.Size(214, 133);
+            this.groupBoxStatus.Size = new System.Drawing.Size(214, 86);
             this.groupBoxStatus.TabIndex = 5;
             this.groupBoxStatus.TabStop = false;
             this.groupBoxStatus.Text = "Status";
@@ -170,38 +177,20 @@
             // labelStatusAdmin
             // 
             this.labelStatusAdmin.AutoSize = true;
-            this.labelStatusAdmin.Location = new System.Drawing.Point(10, 80);
+            this.labelStatusAdmin.Location = new System.Drawing.Point(10, 50);
             this.labelStatusAdmin.Name = "labelStatusAdmin";
             this.labelStatusAdmin.Size = new System.Drawing.Size(147, 20);
             this.labelStatusAdmin.TabIndex = 2;
             this.labelStatusAdmin.Text = "Running as Admin: ";
             // 
-            // labelStatusProcess
-            // 
-            this.labelStatusProcess.AutoSize = true;
-            this.labelStatusProcess.Location = new System.Drawing.Point(10, 30);
-            this.labelStatusProcess.Name = "labelStatusProcess";
-            this.labelStatusProcess.Size = new System.Drawing.Size(111, 20);
-            this.labelStatusProcess.TabIndex = 1;
-            this.labelStatusProcess.Text = "GTA Process: ";
-            // 
             // labelStatusController
             // 
             this.labelStatusController.AutoSize = true;
-            this.labelStatusController.Location = new System.Drawing.Point(10, 55);
+            this.labelStatusController.Location = new System.Drawing.Point(10, 30);
             this.labelStatusController.Name = "labelStatusController";
             this.labelStatusController.Size = new System.Drawing.Size(85, 20);
             this.labelStatusController.TabIndex = 0;
             this.labelStatusController.Text = "Controller: ";
-            // 
-            // labelComingSoon
-            // 
-            this.labelComingSoon.AutoSize = true;
-            this.labelComingSoon.Location = new System.Drawing.Point(209, 56);
-            this.labelComingSoon.Name = "labelComingSoon";
-            this.labelComingSoon.Size = new System.Drawing.Size(106, 20);
-            this.labelComingSoon.TabIndex = 0;
-            this.labelComingSoon.Text = "Coming soon!";
             // 
             // SettingsWindow
             // 
@@ -246,7 +235,6 @@
         private System.Windows.Forms.CheckBox checkBoxStartup;
         private System.Windows.Forms.CheckBox checkBoxController;
         private System.Windows.Forms.Label labelStatusAdmin;
-        private System.Windows.Forms.Label labelStatusProcess;
         private System.Windows.Forms.Label labelStatusController;
         private System.Windows.Forms.Label labelComingSoon;
     }
