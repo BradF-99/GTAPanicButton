@@ -1,0 +1,60 @@
+﻿<Window
+    x:Class="PanicButton.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:PanicButton"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:utilities="clr-namespace:PanicButton.Utilities"
+    xmlns:vm="clr-namespace:PanicButton.ViewModels"
+    Title="GTA Panic Button"
+    Width="430"
+    Height="220"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <vm:MainWindowViewModel x:Key="viewModel" />
+    </Window.Resources>
+    <Window.DataContext>
+        <Binding Source="{StaticResource viewModel}" />
+    </Window.DataContext>
+    <Grid>
+        <Label
+            Margin="10,10,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content="GTA Panic Button"
+            FontSize="24" />
+        <Label
+            Margin="10,68,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content="Press Ctrl + Shift + F11 (or L2 + R2 + L3) to close the game." />
+
+        <Label
+            Margin="10,84,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content="Press Ctrl + Shift + F12 (or L2 + R2 + R3) to suspend GTA." />
+        <Label
+            Margin="10,43,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content="Keep the panic button open or it won't work."
+            FontSize="11"
+            IsEnabled="False" />
+        <Label
+            Margin="0,150,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Content="{Binding Path=Status}"
+            FontSize="11" />
+        <ProgressBar
+            Width="398"
+            Height="30"
+            Margin="0,115,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            utilities:ProgressBarSmoother.SmoothValue="{Binding Progress}" />
+
+    </Grid>
+</Window>
